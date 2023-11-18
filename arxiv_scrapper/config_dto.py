@@ -7,13 +7,10 @@ class ConfigDTO:
     Type annotations for configurations
     """
 
-    seed_urls: list[str]
-    total_articles: int
     headers: dict[str, str]
     encoding: str
     timeout: int
     should_verify_certificate: bool
-    headless_mode: bool
 
     def __init__(
             self,
@@ -61,18 +58,6 @@ class Config:
                          timeout=config['timeout'],
                          should_verify_certificate=config['should_verify_certificate'])
 
-    def get_seed_urls(self) -> list[str]:
-        """
-        Retrieve seed urls
-        """
-        return self._seed_urls
-
-    def get_num_articles(self) -> int:
-        """
-        Retrieve total number of articles to scrape
-        """
-        return self._num_articles
-
     def get_headers(self) -> dict[str, str]:
         """
         Retrieve headers to use during requesting
@@ -96,9 +81,3 @@ class Config:
         Retrieve whether to verify certificate
         """
         return bool(self._should_verify_certificate)
-
-    def get_headless_mode(self) -> bool:
-        """
-        Retrieve whether to use headless mode
-        """
-        return bool(self._headless_mode)

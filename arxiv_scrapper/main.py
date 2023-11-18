@@ -1,9 +1,9 @@
+import multiprocessing as mp
 from itertools import product
 from pathlib import Path
-import multiprocessing as mp
 
-import requests
 import pandas as pd
+import requests
 
 from arxiv_scrapper.config_dto import Config
 from arxiv_scrapper.connection import make_session
