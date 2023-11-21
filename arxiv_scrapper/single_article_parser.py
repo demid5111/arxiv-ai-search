@@ -4,66 +4,50 @@ import re
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 
+from arxiv_scrapper.dto.submission_dto import SubmissionDTO
+from arxiv_scrapper.dto.target_url import ArticleURL
 
 
-
-
-
-
-
-class SingleMonthParser:
+class SingleArticleParser:
     def __init__(self, session, year, month):
         self._session = session
         self._year = year
         self._month = month
-        self._date_pattern = re.compile(r'Authors and titles for (?P<month>\w+)\s+(?P<year>\d+).*')
+        self._date_pattern = re.compile(
+            r'Authors and titles for (?P<month>\w+)\s+(?P<year>\d+).*')
 
-    def run(self):
-        url = TargetURL(self._year, self._month).build()
-        max_pages = self._retrieve_max_pages(url)
+    def run(self, submission):
+        return self._collect_single_page_metadata(submission)
 
-        submissions = []
-        for page in tqdm(range(max_pages)):
-            url = TargetURL(self._year, self._month).build(cur_page_index=page)
-            submissions.extend(self._collect_single_page_metadata(url))
+    def _collect_single_page_metadata(self, row: tuple):
+        submission = SubmissionDTO(*row[1:])
+        url = ArticleURL(submission._url).url
+        print(
+            f'{datetime.datetime.now()} (HTMLParser.retrieve_max_pages) Accessing {url}', flush=True)
 
-        return submissions
+        # feed_request = self._session.get(ArticleURL(submission._url).url)
+        # content = feed_request.text
+        with open(r'C:\Users\a00815200\Downloads\[2305.14314] QLoRA_ Efficient Finetuning of Quantized LLMs.html', encoding='utf-8') as f:
+            content = f.read()
 
-    def _retrieve_max_pages(self, url):
-        print(f'{datetime.datetime.now()} (HTMLParser.retrieve_max_pages) Accessing {url}', flush=True)
+        feed_soup = BeautifulSoup(content, features='lxml')
 
-        feed_request = self._session.get(url)
+        submission.set_title(feed_soup.find(id='abs').find('h1').text)
 
-        feed_soup = BeautifulSoup(feed_request.text, features='lxml')
+        submission.set_submit_date(
+            feed_soup.find('div', {'class': 'dateline'}).text)
 
-        page_title_bs = feed_soup.find('h2')
-        pages_links_bs = page_title_bs.find_next_sibling('small')
+        authors_bs = feed_soup.find(id='abs').find(
+            'div', {'class': 'authors'}).find_all('a')
+        authors = list(
+            map(
+                lambda tag_bs: tag_bs.text.strip(),
+                authors_bs
+            )
+        )
+        submission.set_authors(','.join(authors))
 
-        if not pages_links_bs:
-            # for ancient years, like 1993 there could be months with no submissions at all!
-            return 0
+        submission.set_abstract(feed_soup.find(
+            id='abs').find('blockquote').text.strip())
 
-        return len(pages_links_bs.find_all('a')) + 1  # current page should count, but it is active - no link for it
-
-    def _collect_single_page_metadata(self, url):
-        print(f'{datetime.datetime.now()} (HTMLParser.retrieve_max_pages) Accessing {url}', flush=True)
-
-        feed_request = self._session.get(url)
-
-        feed_soup = BeautifulSoup(feed_request.text, features='lxml')
-
-        res_match = re.match(self._date_pattern, feed_soup.find('h2').text)
-
-        month = res_match.group('month')
-        year = res_match.group('year')
-
-        submission_descriptors_bs = feed_soup.find_all('dt')
-        submissions = []
-        for submission_bs in submission_descriptors_bs:
-            if 'error with ' in submission_bs.text.lower():
-                print(submission_bs.text, 'skip...')
-                continue
-            url = submission_bs.find('span').find('a', title='Abstract').get('href')
-            submissions.append(Submission(url, int(year), month))
-
-        return submissions
+        return submission
