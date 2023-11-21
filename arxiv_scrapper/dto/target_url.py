@@ -13,3 +13,13 @@ class TargetURL:
             cur_page_index=cur_page_index * self.max_links_per_page,
             max_links_per_page=self.max_links_per_page
         )
+
+
+class ArticleURL:
+    base_url='https://arxiv.org{}'
+    def __init__(self, relative_url) -> None:
+        self._url = self.base_url.format(relative_url)
+    
+    @property
+    def url(self):
+        return self._url        
