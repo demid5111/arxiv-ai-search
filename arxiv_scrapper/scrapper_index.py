@@ -5,14 +5,16 @@ from pathlib import Path
 import pandas as pd
 import requests
 
-from arxiv_scrapper.config_dto import Config
+from arxiv_scrapper.dto.config_dto import Config
 from arxiv_scrapper.connection import make_session
 from arxiv_scrapper.constants import DIST_PATH
-from arxiv_scrapper.parser import SingleMonthParser
+from arxiv_scrapper.single_month_index_parser import SingleMonthParser
 
 
 def process_single_month(year, month, session):
-    dump_path = DIST_PATH / f'{year}_{month}.csv'
+    artifacts_path = DIST_PATH / 'tmp_index'
+    artifacts_path.mkdir(exist_ok=True)
+    dump_path = artifacts_path / f'{year}_{month}.csv'
     if dump_path.exists():
         print(f'Skipping {year=} {month=} ...')
         return
