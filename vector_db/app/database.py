@@ -1,6 +1,7 @@
-import chromadb
-import random
 import hashlib
+import random
+
+import chromadb
 
 
 class DataBase:

@@ -5,9 +5,9 @@ from pathlib import Path
 import pandas as pd
 import requests
 
-from arxiv_scrapper.dto.config_dto import Config
 from arxiv_scrapper.connection import make_session
 from arxiv_scrapper.constants import DIST_PATH
+from arxiv_scrapper.dto.config_dto import Config
 from arxiv_scrapper.single_month_index_parser import SingleMonthParser
 
 

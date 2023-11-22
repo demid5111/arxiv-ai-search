@@ -13,26 +13,17 @@ class SingleArticleParser:
         self._session = session
         self._year = year
         self._month = month
-        self._date_pattern = re.compile(
-            r'Authors and titles for (?P<month>\w+)\s+(?P<year>\d+).*')
 
-    def run(self, submission):
-        return self._collect_single_page_metadata(submission)
-
-    def _collect_single_page_metadata(self, row: tuple):
-        submission = SubmissionDTO(*row[1:])
+    def run(self, row: tuple):
+        submission = SubmissionDTO(*row)
         url = ArticleURL(submission._url).url
-        print(
-            f'{datetime.datetime.now()} (HTMLParser.retrieve_max_pages) Accessing {url}', flush=True)
+        print(f'{datetime.datetime.now()} (HTMLParser.retrieve_max_pages) Accessing {url}', flush=True)
 
-        # feed_request = self._session.get(ArticleURL(submission._url).url)
-        # content = feed_request.text
-        with open(r'C:\Users\a00815200\Downloads\[2305.14314] QLoRA_ Efficient Finetuning of Quantized LLMs.html', encoding='utf-8') as f:
-            content = f.read()
+        content = self._session.get(ArticleURL(submission._url).url).text
 
         feed_soup = BeautifulSoup(content, features='lxml')
 
-        submission.set_title(feed_soup.find(id='abs').find('h1').text)
+        submission.set_title(feed_soup.find(id='abs').find('h1').find(text=True, recursive=False))
 
         submission.set_submit_date(
             feed_soup.find('div', {'class': 'dateline'}).text)
@@ -48,6 +39,6 @@ class SingleArticleParser:
         submission.set_authors(','.join(authors))
 
         submission.set_abstract(feed_soup.find(
-            id='abs').find('blockquote').text.strip())
+            id='abs').find('blockquote').text.replace('Abstract: ', '').strip())
 
         return submission

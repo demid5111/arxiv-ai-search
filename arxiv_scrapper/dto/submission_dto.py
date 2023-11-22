@@ -1,5 +1,6 @@
-from pathlib import Path
 import datetime
+from pathlib import Path
+
 import pandas as pd
 
 month_to_num = {
@@ -26,7 +27,7 @@ class SubmissionDTO:
 
     def set_submit_date(self, date_str: str):
         raw = date_str.strip().lower().removeprefix('[submitted on ')
-        day, month, year = raw[:raw.index(']')].split()
+        day, month, year = raw[:raw.index(']')].split()[:3]
         
         month = month_to_num[month]
 

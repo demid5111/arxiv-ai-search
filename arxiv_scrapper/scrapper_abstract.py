@@ -1,34 +1,36 @@
+import multiprocessing as mp
 from itertools import product
 from pathlib import Path
-import multiprocessing as mp
 
 import pandas as pd
 import requests
 from tqdm import tqdm
 
-from arxiv_scrapper.dto.config_dto import Config
 from arxiv_scrapper.connection import make_session
 from arxiv_scrapper.constants import DIST_PATH
-from arxiv_scrapper.dto.submission_dto import SubmissionDTO, NUM_TO_MONTH
+from arxiv_scrapper.dto.config_dto import Config
+from arxiv_scrapper.dto.submission_dto import NUM_TO_MONTH, SubmissionDTO
 from arxiv_scrapper.single_article_parser import SingleArticleParser
 
 
-def load_submissions(path: Path) -> list[SubmissionDTO]:
+def load_submissions(path: Path) -> pd.DataFrame:
     df = pd.read_csv(path, engine='pyarrow')
 
     df['_year'] = df['_year'].astype('int')
 
     df.reset_index(inplace=True, drop=True)
 
+    df.drop([''], axis=1, inplace=True)
+
     return df
 
 
-def process_single_month(year, month, session, submissions_df):
+def process_single_month(year, month, session, submissions_df) -> None:
     print(f'Processing {year=} {month=}')
 
     artifacts_path = DIST_PATH / 'tmp_abstract'
     artifacts_path.mkdir(exist_ok=True)
-    dump_path = artifacts_path / f'{year}_{month}.csv'
+    dump_path = artifacts_path / f'abs_{year}_{month}.csv'
     if dump_path.exists():
         print(f'Skipping {year=} {month=} ...')
         return
@@ -38,7 +40,7 @@ def process_single_month(year, month, session, submissions_df):
     submissions = submissions_df[
         (submissions_df['_year'] == year) &
         (submissions_df['_month'] == NUM_TO_MONTH[month])
-    ].values
+        ].values
 
     new_submissions = [parser.run(row) for row in submissions]
 
@@ -50,22 +52,22 @@ def process_single_month(year, month, session, submissions_df):
     df.to_csv(dump_path)
 
 
-def main() -> None:  # pragma: no cover
+def main() -> None:
     """
     Entrypoint for scrapper module
     """
     requests.packages.urllib3.disable_warnings()
 
-    CRAWLER_CONFIG_PATH = Path(__file__).parent / 'assets' / 'config.json'
-    ARXIV_INDEX_PATH = Path(__file__).parent / \
-        'assets' / 'arxiv_index_Nov_2023.csv'
-    configuration = Config(CRAWLER_CONFIG_PATH)
+    crawler_config_path = Path(__file__).parent / 'assets' / 'config.json'
+    arxiv_index_path = Path(__file__).parent / 'assets' / 'arxiv_index_Nov_2023.csv'
+
+    configuration = Config(crawler_config_path)
     session = make_session(configuration)
 
     years = range(1993, 2023 + 1)
     months = range(1, 12 + 1)
     combinations = list(product(years, months))
-    submissions_df = load_submissions(ARXIV_INDEX_PATH)
+    submissions_df = load_submissions(arxiv_index_path)
 
     # for i, (year, month) in tqdm(enumerate(combinations)):
     #     process_single_month(year, month, session, submissions_df)
