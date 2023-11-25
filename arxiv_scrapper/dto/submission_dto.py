@@ -1,7 +1,4 @@
 import datetime
-from pathlib import Path
-
-import pandas as pd
 
 month_to_num = {
             'jan': 1, 'feb': 2, 'mar': 3, 'apr': 4, 'may': 5, 'jun': 6,
@@ -32,7 +29,7 @@ class SubmissionDTO:
         month = month_to_num[month]
 
         self._submit_date = datetime.datetime(
-            day=int(day), month=month, year=int(year))
+            day=int(day), month=month, year=int(year)).strftime('%d/%m/%Y')
 
     def set_authors(self, authors):
         self._authors = authors

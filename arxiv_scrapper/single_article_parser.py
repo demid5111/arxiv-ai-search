@@ -23,7 +23,7 @@ class SingleArticleParser:
 
         feed_soup = BeautifulSoup(content, features='lxml')
 
-        submission.set_title(feed_soup.find(id='abs').find('h1').find(text=True, recursive=False))
+        submission.set_title(str(feed_soup.find(id='abs').find('h1').find(text=True, recursive=False)))
 
         submission.set_submit_date(
             feed_soup.find('div', {'class': 'dateline'}).text)

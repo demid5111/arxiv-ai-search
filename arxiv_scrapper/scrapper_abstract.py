@@ -9,7 +9,7 @@ from tqdm import tqdm
 from arxiv_scrapper.connection import make_session
 from arxiv_scrapper.constants import DIST_PATH
 from arxiv_scrapper.dto.config_dto import Config
-from arxiv_scrapper.dto.submission_dto import NUM_TO_MONTH, SubmissionDTO
+from arxiv_scrapper.dto.submission_dto import NUM_TO_MONTH
 from arxiv_scrapper.single_article_parser import SingleArticleParser
 
 
@@ -42,12 +42,18 @@ def process_single_month(year, month, session, submissions_df) -> None:
         (submissions_df['_month'] == NUM_TO_MONTH[month])
         ].values
 
-    new_submissions = [parser.run(row) for row in submissions]
+    # new_submissions = [parser.run(row) for row in submissions]
 
-    if not new_submissions:
+    pool = mp.Pool(mp.cpu_count())
+
+    result_objects = (pool.apply_async(parser.run, args=(row, )) for row in submissions)
+
+    results = (r.get() for r in result_objects)
+
+    if not results:
         print(f'No submissions back in {year=} {month=}')
 
-    raw = [submission.__dict__ for submission in new_submissions]
+    raw = [submission.__dict__ for submission in results]
     df = pd.DataFrame(raw)
     df.to_csv(dump_path)
 
@@ -69,20 +75,8 @@ def main() -> None:
     combinations = list(product(years, months))
     submissions_df = load_submissions(arxiv_index_path)
 
-    # for i, (year, month) in tqdm(enumerate(combinations)):
-    #     process_single_month(year, month, session, submissions_df)
-
-    pool = mp.Pool(mp.cpu_count())
-
-    result_objects = (
-        pool.apply_async(process_single_month, args=(
-            year, month, session, submissions_df))
-        for year, month in combinations
-    )
-
-    results = (r.get() for r in result_objects)
-
-    print(len(list(results)))
+    for _, (year, month) in tqdm(enumerate(combinations)):
+        process_single_month(year, month, session, submissions_df)
 
 
 if __name__ == '__main__':
