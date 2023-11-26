@@ -12,8 +12,8 @@ import chromadb
 
 class DataBase:
     def __init__(self, settings: dict) -> None:
-        chroma_client = chromadb.Client()
-        self.collection = chroma_client.create_collection(**settings)
+        chroma_client = chromadb.PersistentClient()
+        self.collection = chroma_client.get_or_create_collection(**settings)
 
     def _generate_random_hash(self) -> None:
         return hashlib.sha256(random.getrandbits(4).to_bytes()).hexdigest()
