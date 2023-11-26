@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -6,6 +7,16 @@ from pydantic import BaseModel
 
 from app.model import Model
 from app.database import DataBase
+=======
+from app.database import DataBase
+from app.model import Model
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from pydantic import BaseModel
+
+>>>>>>> upstream/main
 
 class Item(BaseModel):
     text: str

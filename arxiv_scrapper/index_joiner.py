@@ -9,7 +9,7 @@ def main():
             pd.read_csv,
             filter(
                 lambda x: x.name != 'arxiv_index_final.csv',
-                DIST_PATH.glob('*.csv')
+                (DIST_PATH / 'tmp_index').glob('*.csv')
             )
         ),
         ignore_index=True,
