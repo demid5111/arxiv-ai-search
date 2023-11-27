@@ -1,1 +1,2 @@
 -r arxiv_scrapper/requirements.txt
+-r vector_db/requirements.txt

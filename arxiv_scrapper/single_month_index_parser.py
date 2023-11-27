@@ -4,12 +4,7 @@ import re
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 
-
-class Submission:
-    def __init__(self, url, year, month):
-        self._url = url
-        self._year = year
-        self._month = month
+from arxiv_scrapper.dto.submission_dto import SubmissionDTO
 
 
 class TargetURL:
@@ -82,6 +77,6 @@ class SingleMonthParser:
                 print(submission_bs.text, 'skip...')
                 continue
             url = submission_bs.find('span').find('a', title='Abstract').get('href')
-            submissions.append(Submission(url, int(year), month))
+            submissions.append(SubmissionDTO(url, int(year), month))
 
         return submissions
