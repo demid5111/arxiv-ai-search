@@ -1,8 +1,6 @@
 import datetime
-import re
 
 from bs4 import BeautifulSoup
-from tqdm import tqdm
 
 from arxiv_scrapper.dto.submission_dto import SubmissionDTO
 from arxiv_scrapper.dto.target_url import ArticleURL
@@ -17,11 +15,18 @@ class SingleArticleParser:
     def run(self, row: tuple):
         submission = SubmissionDTO(*row)
         url = ArticleURL(submission._url).url
-        print(f'{datetime.datetime.now()} (HTMLParser.retrieve_max_pages) Accessing {url}', flush=True)
+        print(f'{datetime.datetime.now()} (SingleArticleParser.run) Accessing {url}')
 
         content = self._session.get(ArticleURL(submission._url).url).text
 
         feed_soup = BeautifulSoup(content, features='lxml')
+
+        if feed_soup.find(id='abs') is None:
+            submission.set_abstract('Error')
+            submission.set_submit_date('[Submitted on 10 May 1975]')
+            submission.set_authors('')
+            submission.set_title('Error')
+            return submission
 
         submission.set_title(str(feed_soup.find(id='abs').find('h1').find(text=True, recursive=False)))
 
