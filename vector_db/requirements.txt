@@ -1,13 +1,5 @@
-<<<<<<< HEAD
-fastapi[all]
-jinja2
-sentence-transformers
-chromadb
-pydantic
-=======
 chromadb==0.4.18
 fastapi[all]==0.104.1
 jinja2==3.1.2
 pydantic==2.5.2
 sentence-transformers==2.2.2
->>>>>>> upstream/main
