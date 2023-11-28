@@ -229,3 +229,5 @@ fabric.properties
 
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
+
+arxiv_scrapper/dist/arxiv_abs_Nov_2023.csv
