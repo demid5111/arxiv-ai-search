@@ -42,13 +42,16 @@ def process_single_month(year, month, submissions_df) -> None:
         (submissions_df['_year'] == year) &
         (submissions_df['_month'] == NUM_TO_MONTH[month])
         ].values
-    submissions = submissions[:5]
+    submissions = submissions[:3]
 
     query_results = [SearchFeedParser.run(row) for row in submissions]
+
+    print('Finished with queries')
 
     raw = [submission.as_dict() for submission in query_results]
     df = pd.DataFrame(raw)
     df.to_csv(dump_path)
+    print('Finished with dump')
 
 
 def main() -> None:
@@ -64,8 +67,14 @@ def main() -> None:
     combinations = list(product(years, months))
     submissions_df = load_submissions(arxiv_index_path)
 
-    for _, (year, month) in tqdm(enumerate(combinations), total=len(combinations)):
-        process_single_month(year, month, submissions_df)
+    import sys
+    _, year, month = sys.argv
+    print(f'{year=} {month=}')
+
+    process_single_month(int(year), int(month), submissions_df)
+
+    # for _, (year, month) in tqdm(enumerate(combinations), total=len(combinations)):
+    #     process_single_month(year, month, submissions_df)
 
 
 if __name__ == '__main__':
