@@ -1,13 +1,77 @@
 import datetime
+from pathlib import Path
+from time import sleep
 from urllib.parse import urlparse
 
-from googlesearch import search
-from tqdm import tqdm
+import googlesearch
+import requests
+from bs4 import BeautifulSoup
+from googlesearch import SearchResult
 
+from arxiv_scrapper.connection import Config, make_session
 from arxiv_scrapper.dto.submission_dto import (SubmissionDTO,
                                                SubmissionQueryResultDTO)
 from arxiv_scrapper.dto.target_url import SearchFeedURL
 
+
+def _req(term, results, lang, start, proxies, timeout):
+    print('Patched request function for googlesearch library')
+    requests.packages.urllib3.disable_warnings() 
+    CRAWLER_CONFIG_PATH = Path(__file__).parent / 'assets' / 'config.json'
+    configuration = Config(CRAWLER_CONFIG_PATH)
+    session = make_session(configuration)
+
+    resp = session.get(
+        url="https://www.google.com/search",
+        params={
+            "q": term,
+            "num": results + 2,  # Prevents multiple requests
+            "hl": lang,
+            "start": start,
+        },
+        proxies=proxies,
+        timeout=timeout,
+    )
+    resp.raise_for_status()
+    return resp
+
+
+
+def search(term, num_results=10, lang="en", advanced=False, sleep_interval=0, timeout=5):
+    """Search the Google search engine"""
+
+    escaped_term = term.replace(" ", "+")
+
+    # Fetch
+    start = 0
+    while start < num_results:
+        # Send request
+        print('request...', flush=True)
+        resp = _req(escaped_term, num_results - start,
+                    lang, start, timeout)
+        print('now parse...', flush=True)
+        # Parse
+        soup = BeautifulSoup(resp.text, "html.parser")
+        result_block = soup.find_all("div", attrs={"class": "g"})
+        for result in result_block:
+            # Find link, title, description
+            link = result.find("a", href=True)
+            title = result.find("h3")
+            description_box = result.find(
+                "div", {"style": "-webkit-line-clamp:2"})
+            if description_box:
+                description = description_box.text
+                if link and title and description:
+                    start += 1
+                    if advanced:
+                        yield SearchResult(link["href"], title.text, description)
+                    else:
+                        yield link["href"]
+        print('sleep...')
+        sleep(sleep_interval)
+
+googlesearch._req = _req
+googlesearch.search = search
 
 class SearchFeedParser:
     @staticmethod
