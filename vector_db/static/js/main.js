@@ -35,5 +35,9 @@ searchBtn.addEventListener('click', async () => {
     let res = await fetch(`query/`, data)
     const result = await res.json();
     console.log(result)
-    resultsBox.innerHTML = `${result['distances'][0]}\n${result['documents'][0]}`
+    for (const [index, value] of result['distances'].entries()) {
+        p = document.createElement('p')
+        p.innerHTML = `${value} ${result['documents'][index]}`
+        resultsBox.appendChild(p)
+    }
 })
