@@ -22,5 +22,5 @@ class DataBase:
     def query(self, query: str):
         return self.collection.query(
             query_texts=[query],
-            n_results=2
+            n_results=5
         )
