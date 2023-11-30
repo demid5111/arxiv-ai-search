@@ -36,10 +36,11 @@ searchBtn.addEventListener('click', async () => {
     const result = await res.json();
     console.log(result);
     resultsBox.replaceChildren();
-    for (const [index, value] of result['distances'].entries()) {
+    for (const [index, value] of result['distances'][0].entries()) {
+        console.log(index)
         li = document.createElement('li');
         li.classList.add('list-group-item');
-        li.innerHTML = `${value} ${result['documents'][index]}`;
+        li.innerHTML = `${value} ${result['documents'][0][index]}`;
         resultsBox.appendChild(li);
     }
 })
