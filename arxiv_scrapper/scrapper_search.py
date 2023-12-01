@@ -1,5 +1,7 @@
+import time
 from itertools import product
 from pathlib import Path
+from selenium import webdriver
 
 import pandas as pd
 import pyarrow as pa
@@ -27,7 +29,7 @@ def load_submissions(path: Path) -> pd.DataFrame:
     return df
 
 
-def process_single_month(year, month, submissions_df) -> None:
+def process_single_month(year, month, submissions_df, browser) -> None:
     print(f'Processing {year=} {month=}')
 
     artifacts_path = DIST_PATH / 'tmp_val'
@@ -44,7 +46,7 @@ def process_single_month(year, month, submissions_df) -> None:
         ].values
     submissions = submissions[:3]
 
-    query_results = [SearchFeedParser.run(row) for row in submissions]
+    query_results = [SearchFeedParser.run(row, browser) for row in submissions]
 
     print('Finished with queries')
 
@@ -67,14 +69,18 @@ def main() -> None:
     combinations = list(product(years, months))
     submissions_df = load_submissions(arxiv_index_path)
 
-    import sys
-    _, year, month = sys.argv
-    print(f'{year=} {month=}')
+    # import sys
+    # _, year, month = sys.argv
+    # print(f'{year=} {month=}')
 
-    process_single_month(int(year), int(month), submissions_df)
+    # process_single_month(int(year), int(month), submissions_df)
 
-    # for _, (year, month) in tqdm(enumerate(combinations), total=len(combinations)):
-    #     process_single_month(year, month, submissions_df)
+    browser = webdriver.Chrome()
+    for _, (year, month) in tqdm(enumerate(combinations), total=len(combinations)):
+        process_single_month(year, month, submissions_df, browser)
+        time.sleep(5)
+        break
+    browser.quit()
 
 
 if __name__ == '__main__':
