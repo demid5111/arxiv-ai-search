@@ -232,3 +232,5 @@ fabric.properties
 
 arxiv_scrapper/assets/arxiv_abs_Nov_2023.csv
 .DS_Store
+
+chroma/
