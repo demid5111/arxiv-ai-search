@@ -7,6 +7,7 @@ import pandas as pd
 import pyarrow as pa
 import requests
 from pyarrow import csv
+from selenium.webdriver.chrome.options import Options
 from tqdm import tqdm
 
 from arxiv_scrapper.constants import DIST_PATH
@@ -15,17 +16,11 @@ from arxiv_scrapper.search_feed_parser import SearchFeedParser
 
 
 def load_submissions(path: Path) -> pd.DataFrame:
-
     pa_table = pa.csv.read_csv(path, read_options=pa.csv.ReadOptions(block_size=1e9))
-
     df = pa_table.to_pandas()
-
     df['_year'] = df['_year'].astype('int')
-
     df.reset_index(inplace=True, drop=True)
-
     df.drop([''], axis=1, inplace=True)
-
     return df
 
 
@@ -44,16 +39,13 @@ def process_single_month(year, month, submissions_df, browser) -> None:
         (submissions_df['_year'] == year) &
         (submissions_df['_month'] == NUM_TO_MONTH[month])
         ].values
-    submissions = submissions[:3]
+    submissions = submissions[:50]
 
     query_results = [SearchFeedParser.run(row, browser) for row in submissions]
-
-    print('Finished with queries')
 
     raw = [submission.as_dict() for submission in query_results]
     df = pd.DataFrame(raw)
     df.to_csv(dump_path)
-    print('Finished with dump')
 
 
 def main() -> None:
@@ -69,17 +61,15 @@ def main() -> None:
     combinations = list(product(years, months))
     submissions_df = load_submissions(arxiv_index_path)
 
-    # import sys
-    # _, year, month = sys.argv
-    # print(f'{year=} {month=}')
+    options = Options()
+    options.add_argument('--headless')
+    browser = webdriver.Chrome(options)
 
-    # process_single_month(int(year), int(month), submissions_df)
-
-    browser = webdriver.Chrome()
     for _, (year, month) in tqdm(enumerate(combinations), total=len(combinations)):
         process_single_month(year, month, submissions_df, browser)
         time.sleep(5)
         break
+
     browser.quit()
 
 
