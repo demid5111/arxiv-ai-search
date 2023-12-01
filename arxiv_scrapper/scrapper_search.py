@@ -1,14 +1,17 @@
 import time
 from itertools import product
 from pathlib import Path
-from selenium import webdriver
 
 import pandas as pd
 import pyarrow as pa
 import requests
 from pyarrow import csv
+from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service as ChromiumService
 from tqdm import tqdm
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.core.os_manager import ChromeType
 
 from arxiv_scrapper.constants import DIST_PATH
 from arxiv_scrapper.dto.submission_dto import NUM_TO_MONTH
@@ -39,9 +42,12 @@ def process_single_month(year, month, submissions_df, browser) -> None:
         (submissions_df['_year'] == year) &
         (submissions_df['_month'] == NUM_TO_MONTH[month])
         ].values
-    submissions = submissions[:50]
+    submissions = submissions[:30]
 
-    query_results = [SearchFeedParser.run(row, browser) for row in submissions]
+    query_results = [
+        SearchFeedParser.run(row, browser) 
+        for row in tqdm(submissions, total=len(submissions))
+    ]
 
     raw = [submission.as_dict() for submission in query_results]
     df = pd.DataFrame(raw)
@@ -63,12 +69,18 @@ def main() -> None:
 
     options = Options()
     options.add_argument('--headless')
-    browser = webdriver.Chrome(options)
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
+
+    browser = webdriver.Chrome(
+        service=ChromiumService(ChromeDriverManager().install()),
+        options=options
+    )
+
 
     for _, (year, month) in tqdm(enumerate(combinations), total=len(combinations)):
         process_single_month(year, month, submissions_df, browser)
         time.sleep(5)
-        break
 
     browser.quit()
 
