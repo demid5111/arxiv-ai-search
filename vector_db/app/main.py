@@ -17,7 +17,7 @@ templates = Jinja2Templates(directory="templates")
 model = Model()
 
 settings = {
-    "name":"my_collection"
+    "name":"arxiv"
 }
 db = DataBase(settings)
 

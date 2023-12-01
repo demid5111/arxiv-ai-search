@@ -25,3 +25,7 @@ body {
 input, button {
     margin-right: 5px;
 }
+
+#addBtn, #embeddingBtn {
+    display: none;
+}
