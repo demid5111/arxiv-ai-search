@@ -7,7 +7,7 @@ import chromadb
 
 class DataBase:
     def __init__(self, settings: dict) -> None:
-        chroma_client = chromadb.PersistentClient(path='/home/user/projects/arxiv-ai-search/chroma')
+        chroma_client = chromadb.PersistentClient()
         self.collection = chroma_client.get_or_create_collection(**settings)
 
     def _generate_random_hash(self) -> None:
