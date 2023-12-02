@@ -7,11 +7,16 @@ import pyarrow as pa
 import requests
 from pyarrow import csv
 from selenium import webdriver
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service as ChromiumService
 from tqdm import tqdm
 from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.core.os_manager import ChromeType
+
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import TimeoutException
 
 from arxiv_scrapper.constants import DIST_PATH
 from arxiv_scrapper.dto.submission_dto import NUM_TO_MONTH
@@ -34,15 +39,15 @@ def process_single_month(year, month, submissions_df, browser) -> None:
     artifacts_path.mkdir(exist_ok=True)
     dump_path = artifacts_path / f'val_{year}_{month}.csv'
 
-    if dump_path.exists():
-        print(f'Skipping {year=} {month=} ...')
-        return
+    # if dump_path.exists():
+    #     print(f'Skipping {year=} {month=} ...')
+    #     return
 
     submissions = submissions_df[
         (submissions_df['_year'] == year) &
         (submissions_df['_month'] == NUM_TO_MONTH[month])
         ].values
-    submissions = submissions[:30]
+    submissions = submissions[:1]
 
     query_results = [
         SearchFeedParser.run(row, browser) 
@@ -62,7 +67,7 @@ def main() -> None:
 
     arxiv_index_path = Path(__file__).parent / 'assets' / 'arxiv_abs_Nov_2023.csv'
 
-    years = range(2018, 2023 + 1)
+    years = range(2019, 2023 + 1)
     months = range(1, 12 + 1)
     combinations = list(product(years, months))
     submissions_df = load_submissions(arxiv_index_path)
@@ -71,18 +76,31 @@ def main() -> None:
     options.add_argument('--headless')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
-
-    browser = webdriver.Chrome(
-        service=ChromiumService(ChromeDriverManager().install()),
-        options=options
-    )
-
-
-    for _, (year, month) in tqdm(enumerate(combinations), total=len(combinations)):
+    options.add_argument(f"--window-size=1920,1080")
+    options.add_argument("--hide-scrollbars")
+    
+    for i, (year, month) in tqdm(enumerate(combinations), total=len(combinations)):
+        service = ChromiumService(ChromeDriverManager().install())
+        browser = webdriver.Chrome(service=service, options=options)
+        browser.get('http://www.google.com')
+        delay = 30 # seconds
+        try:
+            myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.NAME, 'q')))
+            print("Page is ready!")
+        except TimeoutException:
+            print("Loading took too much time!")
+        
         process_single_month(year, month, submissions_df, browser)
-        time.sleep(5)
 
-    browser.quit()
+        page_path_root = Path(__file__).parent  / f'dist' / 'screens' 
+        page_path_root.mkdir(exist_ok=True)
+        # page_path = page_path_root / f'{i}.html'
+        # with page_path.open('w', encoding='utf-8') as f:
+        #     f.write(browser.page_source)
+        browser.save_screenshot(f'{i}.png')
+        browser.quit()
+
+        time.sleep(5)
 
 
 if __name__ == '__main__':

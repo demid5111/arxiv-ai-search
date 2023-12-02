@@ -19,7 +19,7 @@ def _process(path_to_compress: Path):
     )
     joint_df = joint_df.drop('Unnamed: 0', axis=1)
 
-    joint_df['_year'] = joint_df['_year'].astype('int')
+    # joint_df['_year'] = joint_df['_year'].astype('int')
 
     joint_df.reset_index(inplace=True, drop=True)
 
@@ -31,6 +31,7 @@ def _process(path_to_compress: Path):
 def main():
     path_to_compress = DIST_PATH / 'tmp_index'
     path_to_compress = DIST_PATH / 'tmp_abstract'
+    path_to_compress = DIST_PATH / 'tmp_val'
     _process(path_to_compress)
 
 

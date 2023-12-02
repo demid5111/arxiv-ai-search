@@ -25,7 +25,7 @@ def search(browser, title):
     search_field = browser.find_element(By.NAME, 'q')
     search_field.send_keys(f"{title} site:arxiv.org")
     search_field.send_keys(Keys.RETURN)  # hit return after you enter search text
-    time.sleep(0.1)  # sleep for 5 seconds so you can see the results
+    time.sleep(5)  # sleep for 5 seconds so you can see the results
 
     scroll_to_bottom(browser, 3)
 
