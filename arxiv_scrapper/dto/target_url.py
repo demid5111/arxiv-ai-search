@@ -1,3 +1,6 @@
+from urllib.parse import urlencode
+
+
 class TargetURL:
     base_template = 'https://arxiv.org/list/cs/{year}{month}?skip={cur_page_index}&show={max_links_per_page}'
     max_links_per_page = 2000
@@ -16,10 +19,26 @@ class TargetURL:
 
 
 class ArticleURL:
-    base_url='https://arxiv.org{}'
+    base_url = 'https://arxiv.org{}'
+
     def __init__(self, relative_url) -> None:
         self._url = self.base_url.format(relative_url)
-    
+
     @property
     def url(self):
-        return self._url        
+        return self._url
+
+
+class SearchFeedURL:
+    max_links_per_feed = 50
+    base_url = 'https://arxiv.org/search/?searchtype=abstract&{}&abstracts=hide&size={}&order='
+
+    def __init__(self, text):
+        self._text = text
+
+        text_url_format = urlencode({'query': self._text})
+        self._url = self.base_url.format(text_url_format, self.max_links_per_feed)
+
+    @property
+    def url(self):
+        return self._url
