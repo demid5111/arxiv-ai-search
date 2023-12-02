@@ -1,14 +1,8 @@
-<<<<<<< HEAD
-import chromadb
-import random
-import hashlib
-=======
 import hashlib
 import random
 import secrets
 
 import chromadb
->>>>>>> upstream/main
 
 
 class DataBase:
