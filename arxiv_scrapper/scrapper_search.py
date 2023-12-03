@@ -47,7 +47,7 @@ def process_single_month(year, month, submissions_df, browser) -> None:
         (submissions_df['_year'] == year) &
         (submissions_df['_month'] == NUM_TO_MONTH[month])
         ].values
-    submissions = submissions[:1]
+    submissions = submissions[:10]
 
     query_results = [
         SearchFeedParser.run(row, browser) 
