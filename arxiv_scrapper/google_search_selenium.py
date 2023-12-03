@@ -35,8 +35,6 @@ def search(browser, title):
 
     soup = BeautifulSoup(html, features='lxml')
 
-    print(soup.find_all('div'))
-
     links = soup.find_all('a', {'jsname': True, 'data-ved': True})
 
     urls = [link.get("href") for link in links if link.get("href") ]

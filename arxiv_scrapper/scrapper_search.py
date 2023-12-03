@@ -69,7 +69,7 @@ def main() -> None:
 
     arxiv_index_path = Path(__file__).parent / 'assets' / 'arxiv_abs_Nov_2023.csv'
 
-    years = range(2019, 2023 + 1)
+    years = range(2023, 2023 + 1)
     months = range(1, 12 + 1)
     combinations = list(product(years, months))
     submissions_df = load_submissions(arxiv_index_path)
