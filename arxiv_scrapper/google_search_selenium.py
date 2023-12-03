@@ -1,5 +1,5 @@
 import time
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urlencode
 
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
@@ -21,10 +21,12 @@ def is_arxiv_link(url: str):
 
 
 def search(browser, title):
-    # browser.get('https://www.google.com/search?q=')
-    search_field = browser.find_element(By.NAME, 'q')
-    search_field.send_keys(f"{title} site:arxiv.org")
-    search_field.send_keys(Keys.RETURN)  # hit return after you enter search text
+    new_url = 'https://www.google.com/search?' + urlencode({'q': f"{title} site:arxiv.org"})
+    browser.get(new_url)
+
+    # search_field = browser.find_element(By.NAME, 'q')
+    # search_field.send_keys(f"{title} site:arxiv.org")
+    # search_field.send_keys(Keys.RETURN)  # hit return after you enter search text
     time.sleep(15)  # sleep for 5 seconds so you can see the results
 
     scroll_to_bottom(browser, 1)

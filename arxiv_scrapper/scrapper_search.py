@@ -70,7 +70,7 @@ def main() -> None:
     arxiv_index_path = Path(__file__).parent / 'assets' / 'arxiv_abs_Nov_2023.csv'
 
     years = range(2019, 2023 + 1)
-    months = range(1, 12 + 1)
+    months = range(9, 12 + 1)
     combinations = list(product(years, months))
     submissions_df = load_submissions(arxiv_index_path)
 
@@ -85,8 +85,12 @@ def main() -> None:
         service = ChromiumService(ChromeDriverManager().install())
         browser = webdriver.Chrome(service=service, options=options)
 
-        # service = FirefoxService(GeckoDriverManager().install())
-        # browser = webdriver.Firefox(service=service)
+        # print(GeckoDriverManager().install())
+        # service = FirefoxService(
+        #     executable_path=GeckoDriverManager().install(),
+        #     firefox_binary='/usr/bin/firefox'
+        # )
+        # browser = webdriver.Firefox(service=service, options=options)
         browser.get('http://www.google.com')
         delay = 30 # seconds
         try:
