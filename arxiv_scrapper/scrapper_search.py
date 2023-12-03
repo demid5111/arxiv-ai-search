@@ -34,7 +34,7 @@ def load_submissions(path: Path) -> pd.DataFrame:
     return df
 
 
-def process_single_month(year, month, submissions_df, browser) -> None:
+def process_single_month(year, month, submissions_df, browser) -> int | None:
     print(f'Processing {year=} {month=}')
 
     artifacts_path = DIST_PATH / 'tmp_val'
@@ -43,7 +43,7 @@ def process_single_month(year, month, submissions_df, browser) -> None:
 
     if dump_path.exists():
         print(f'Skipping {year=} {month=} ...')
-        return
+        return -1
 
     submissions = submissions_df[
         (submissions_df['_year'] == year) &
@@ -70,7 +70,7 @@ def main() -> None:
     arxiv_index_path = Path(__file__).parent / 'assets' / 'arxiv_abs_Nov_2023.csv'
 
     years = range(2019, 2023 + 1)
-    months = range(9, 12 + 1)
+    months = range(1, 12 + 1)
     combinations = list(product(years, months))
     submissions_df = load_submissions(arxiv_index_path)
 
@@ -99,7 +99,7 @@ def main() -> None:
         except TimeoutException:
             print("Loading took too much time!")
         
-        process_single_month(year, month, submissions_df, browser)
+        res = process_single_month(year, month, submissions_df, browser)
 
         page_path_root = Path(__file__).parent  / f'dist' / 'screens' 
         page_path_root.mkdir(exist_ok=True)
@@ -109,7 +109,8 @@ def main() -> None:
         # browser.save_screenshot(f'{i}.png')
         browser.quit()
 
-        time.sleep(15)
+        if res != -1:
+            time.sleep(15)
 
 
 if __name__ == '__main__':
