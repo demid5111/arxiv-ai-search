@@ -8,7 +8,7 @@ from selenium.webdriver.common.keys import Keys
 
 
 def scroll_to_bottom(browser, times):
-    scroll_pause_time = 2
+    scroll_pause_time = 5
 
     for _ in range(times):
         browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
@@ -22,10 +22,11 @@ def is_arxiv_link(url: str):
 
 
 def search(browser, title):
+    # browser.get('https://www.google.com/search?q=')
     search_field = browser.find_element(By.NAME, 'q')
     search_field.send_keys(f"{title} site:arxiv.org")
     search_field.send_keys(Keys.RETURN)  # hit return after you enter search text
-    time.sleep(5)  # sleep for 5 seconds so you can see the results
+    time.sleep(15)  # sleep for 5 seconds so you can see the results
 
     scroll_to_bottom(browser, 1)
 

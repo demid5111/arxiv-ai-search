@@ -10,8 +10,10 @@ from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service as ChromiumService
+from selenium.webdriver.firefox.service import Service as FirefoxService
 from tqdm import tqdm
 from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.firefox import GeckoDriverManager
 
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -39,9 +41,9 @@ def process_single_month(year, month, submissions_df, browser) -> None:
     artifacts_path.mkdir(exist_ok=True)
     dump_path = artifacts_path / f'val_{year}_{month}.csv'
 
-    # if dump_path.exists():
-    #     print(f'Skipping {year=} {month=} ...')
-    #     return
+    if dump_path.exists():
+        print(f'Skipping {year=} {month=} ...')
+        return
 
     submissions = submissions_df[
         (submissions_df['_year'] == year) &
@@ -82,6 +84,9 @@ def main() -> None:
     for i, (year, month) in tqdm(enumerate(combinations), total=len(combinations)):
         service = ChromiumService(ChromeDriverManager().install())
         browser = webdriver.Chrome(service=service, options=options)
+
+        # service = FirefoxService(GeckoDriverManager().install())
+        # browser = webdriver.Firefox(service=service)
         browser.get('http://www.google.com')
         delay = 30 # seconds
         try:
@@ -97,10 +102,10 @@ def main() -> None:
         # page_path = page_path_root / f'{i}.html'
         # with page_path.open('w', encoding='utf-8') as f:
         #     f.write(browser.page_source)
-        browser.save_screenshot(f'{i}.png')
+        # browser.save_screenshot(f'{i}.png')
         browser.quit()
 
-        time.sleep(5)
+        time.sleep(15)
 
 
 if __name__ == '__main__':
