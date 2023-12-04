@@ -7,7 +7,7 @@ import chromadb
 
 class DataBase:
     def __init__(self, settings: dict) -> None:
-        chroma_client = chromadb.PersistentClient()
+        chroma_client = chromadb.PersistentClient(path='C:\\Users\\admin\\arxiv-ai-search\\vector_db\\chroma')
         self.collection = chroma_client.get_or_create_collection(**settings)
 
     def _generate_random_hash(self) -> None:
@@ -21,8 +21,14 @@ class DataBase:
             # ids=[str(index) for index in range(len(documents))]
         )
 
-    def query(self, query: str):
+    def query(self, text: str):
         return self.collection.query(
-            query_texts=[query],
+            query_texts=[text],
             n_results=5
+        )
+    
+    def query_embedding(self, embedding: list[str], n_results=10):
+        return self.collection.query(
+            query_embeddings=embedding.tolist(),
+            n_results=n_results
         )
