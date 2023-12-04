@@ -1,14 +1,13 @@
 import time
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urlencode
 
 from bs4 import BeautifulSoup
-from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
 
 def scroll_to_bottom(browser, times):
-    scroll_pause_time = 1.5
+    scroll_pause_time = 5
 
     for _ in range(times):
         browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
@@ -22,12 +21,15 @@ def is_arxiv_link(url: str):
 
 
 def search(browser, title):
-    search_field = browser.find_element(By.NAME, 'q')
-    search_field.send_keys(f"{title} site:arxiv.org")
-    search_field.send_keys(Keys.RETURN)  # hit return after you enter search text
-    time.sleep(0.1)  # sleep for 5 seconds so you can see the results
+    new_url = 'https://www.google.com/search?' + urlencode({'q': f"{title} site:arxiv.org"})
+    browser.get(new_url)
 
-    scroll_to_bottom(browser, 3)
+    # search_field = browser.find_element(By.NAME, 'q')
+    # search_field.send_keys(f"{title} site:arxiv.org")
+    # search_field.send_keys(Keys.RETURN)  # hit return after you enter search text
+    time.sleep(15)  # sleep for 5 seconds so you can see the results
+
+    scroll_to_bottom(browser, 1)
 
     html = browser.page_source
 
