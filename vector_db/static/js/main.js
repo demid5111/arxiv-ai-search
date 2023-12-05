@@ -35,15 +35,6 @@ searchBtn.addEventListener('click', async () => {
     data.body = JSON.stringify({text: searchText.value});
     let res = await fetch(`query/`, data);
     const result = await res.json();
-    console.log(result);
-    // resultsBox.replaceChildren();
-    // for (const [index, value] of result['distances'][0].entries()) {
-    //     li = document.createElement('li');
-    //     li.classList.add('list-group-item');
-    //     li.innerHTML = `${value} ${result['documents'][0][index]}`;
-    //     resultsBox.appendChild(li);
-
-    // }
     accordion.replaceChildren();
     update_accordion(accordion, result)
 })

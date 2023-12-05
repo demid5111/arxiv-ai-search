@@ -1,13 +1,15 @@
 import hashlib
 import random
 import secrets
+from pathlib import Path
+from typing import Any, Optional, Union
 
 import chromadb
 
 
 class DataBase:
-    def __init__(self, settings: dict) -> None:
-        chroma_client = chromadb.PersistentClient(path='C:\\Users\\admin\\arxiv-ai-search\\vector_db\\chroma')
+    def __init__(self, settings: dict[str, Any], db_path: Optional[Union[Path, str]] = None) -> None:
+        chroma_client = chromadb.PersistentClient(path=db_path)
         self.collection = chroma_client.get_or_create_collection(**settings)
 
     def _generate_random_hash(self) -> None:
@@ -21,13 +23,13 @@ class DataBase:
             # ids=[str(index) for index in range(len(documents))]
         )
 
-    def query(self, text: str):
+    def query(self, text: str, n_results: int = 10):
         return self.collection.query(
             query_texts=[text],
-            n_results=5
+            n_results=n_results
         )
-    
-    def query_embedding(self, embedding: list[str], n_results=10):
+
+    def query_embedding(self, embedding: list[str], n_results: int = 10):
         return self.collection.query(
             query_embeddings=embedding.tolist(),
             n_results=n_results
