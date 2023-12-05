@@ -8,8 +8,8 @@ import chromadb
 
 
 class DataBase:
-    def __init__(self, settings: dict[str, Any], db_path: Optional[Union[Path, str]] = None) -> None:
-        chroma_client = chromadb.PersistentClient(path=db_path)
+    def __init__(self, settings: dict[str, Any]) -> None:
+        chroma_client = chromadb.PersistentClient()
         self.collection = chroma_client.get_or_create_collection(**settings)
 
     def _generate_random_hash(self) -> None:
