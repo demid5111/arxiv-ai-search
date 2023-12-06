@@ -12,6 +12,8 @@ class SearchFeedParser:
 
         only_target_links = search(browser, submission._title)
 
+        print(len(only_target_links), flush=True)
+
         without_myself = list(filter(lambda x: x != submission._url, only_target_links))
 
         return SubmissionQueryResultDTO(submission, without_myself[:top_n])
