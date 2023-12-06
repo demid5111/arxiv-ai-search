@@ -9,11 +9,25 @@ uvicorn app.main:app --reload
 ```
 
 ## Results
+- All targets samples: 590
+- Broken samples: 153
+- Unrelated samples: 220
+- Target samples: 217
 
-| Model                      | Metric | Accuracy |
-| -------------------------- | ------ | -------- |
-| all-MiniLM-L6-v2           | Cosin  | 0.013    |
-| all-mpnet-base-v2          | Cosin  |          |
-| all-distilroberta-v1       | Cosin  |          |
-| multi-qa-distilbert-cos-v1 | Cosin  |          |
+### L2 abstract
+| Model                      | Precisions | Top-K |
+| -------------------------- | ---------- | ----- |
+| all-MiniLM-L6-v2           | 0.12       | 1.16  |
+| all-mpnet-base-v2          |            |       |
+| all-distilroberta-v1       |            |       |
+| multi-qa-distilbert-cos-v1 |            |       |
+| e5-large                   |            |       |
 
+### L2 title
+| Model                      | Precisions | Top-K |
+| -------------------------- | ---------- | ----- |
+| all-MiniLM-L6-v2           | 0.11       | 1.10  |
+| all-mpnet-base-v2          |            |       |
+| all-distilroberta-v1       |            |       |
+| multi-qa-distilbert-cos-v1 |            |       |
+| e5-large                   |            |       |
