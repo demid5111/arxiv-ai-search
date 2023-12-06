@@ -1,12 +1,14 @@
 import hashlib
 import random
 import secrets
+from pathlib import Path
+from typing import Any, Optional, Union
 
 import chromadb
 
 
 class DataBase:
-    def __init__(self, settings: dict) -> None:
+    def __init__(self, settings: dict[str, Any]) -> None:
         chroma_client = chromadb.PersistentClient()
         self.collection = chroma_client.get_or_create_collection(**settings)
 
@@ -21,8 +23,14 @@ class DataBase:
             # ids=[str(index) for index in range(len(documents))]
         )
 
-    def query(self, query: str):
+    def query(self, text: str, n_results: int = 10):
         return self.collection.query(
-            query_texts=[query],
-            n_results=5
+            query_texts=[text],
+            n_results=n_results
+        )
+
+    def query_embedding(self, embedding: list[str], n_results: int = 10):
+        return self.collection.query(
+            query_embeddings=embedding.tolist(),
+            n_results=n_results
         )
