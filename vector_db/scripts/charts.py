@@ -14,6 +14,8 @@ class Charts():
         self.df = pd.read_csv(path)
 
     def all_years(self, save_path: Path = Path('./dist'), start_year: int = 1993, union_year: int = 2011, end_year: int = 2023):
+        palitra_pie = ['#445577', '#606d8a', '#7c859e', '#989fb2', '#b5bac7', '#d3d5db',
+                       '#f1f1f1', '#f1d4d4', '#f0b8b8', '#ec9c9d', '#e67f83', '#de6069', '#de425b']
         labels_pie = []
         values_pie = []
         sum_union_year = self.df[self.df._year <= union_year]._year.count()
@@ -25,8 +27,8 @@ class Charts():
             values_pie.append(sum_year)
         plt.clf()
         fig, ax = plt.subplots()
-        ax.pie(values_pie, labels=labels_pie)
-        print(list(plt.cm.colors.cnames.keys()))
+        ax.pie(values_pie, labels=labels_pie, wedgeprops={
+               'linewidth': 1, "edgecolor": 'white'}, colors=palitra_pie)
         plt.savefig(save_path / 'all_years.png')
 
     def current_years(self, save_path: Path = Path('./dist')):
@@ -39,10 +41,23 @@ class Charts():
         plt.clf()
         fig, ax = plt.subplots()
         ax.bar(self.month_list, current_month)
-        fig.suptitle('fgf')
-        ax.set_xlabel('Месяцы')
-        ax.set_ylabel('Количество')
+        ax.set_xlabel('Months')
+        ax.set_ylabel('Count')
         plt.savefig(save_path / f'figure_bar.png')
+
+    def progression_graph(self, start_year: int = 1993, end_year: int = 2023, save_path: Path = Path('./dist')):
+        labels_plot = []
+        values_plot = []
+        for i in range(start_year, end_year + 1):
+            sum_year = self.df[self.df._year == i]._year.count()
+            labels_plot.append(int(i))
+            values_plot.append(sum_year)
+        plt.clf()
+        fig, ax = plt.subplots()
+        ax.plot(labels_plot, values_plot)
+        ax.set_xlabel('Years')
+        ax.set_ylabel('Count')
+        plt.savefig(save_path / f'progression_bar.png')
 
 
 def get_args():
@@ -57,6 +72,7 @@ def main():
 
     charts.all_years()
     charts.current_years()
+    charts.progression_graph()
 
 
 if __name__ == '__main__':
