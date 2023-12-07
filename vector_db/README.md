@@ -31,3 +31,22 @@ uvicorn app.main:app --reload
 | all-distilroberta-v1       |            |       |
 | multi-qa-distilbert-cos-v1 |            |       |
 | e5-large                   |            |       |
+
+
+### Cosine abstract
+| Model                      | Precisions | Top-K   |
+| -------------------------- | ---------- | ------- |
+| all-MiniLM-L6-v2           | 0.11566    | 1.15668 |
+| all-mpnet-base-v2          |            |         |
+| all-distilroberta-v1       |            |         |
+| multi-qa-distilbert-cos-v1 |            |         |
+| e5-large                   |            |         |
+
+### Cosine title
+| Model                      | Precisions | Top-K    |
+| -------------------------- | ---------- | -------- |
+| all-MiniLM-L6-v2           | 0.10921    | 1.092165 |
+| all-mpnet-base-v2          |            |          |
+| all-distilroberta-v1       |            |          |
+| multi-qa-distilbert-cos-v1 |            |          |
+| e5-large                   |            |          |
