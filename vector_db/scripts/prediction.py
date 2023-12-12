@@ -21,7 +21,10 @@ settings = {
 db = DataBase(settings)
 
 df_google = pd.read_csv(args.path_to_target)
+print('All targets: ', len(df_google))
+
 df_google = df_google.dropna()
+print('After drop targets: ', len(df_google))
 
 df_full = pd.read_csv(args.path_to_full)
 
@@ -32,16 +35,55 @@ for i in range(1, 11):
 df = pd.DataFrame(columns=columns)
 
 accuracy = []
+precisions = []
+all_tp = 0
+unrelated = 0
 
 for row in df_google.iterrows():
+    tp = 0
+    fp = 0
+    top_k_flag = True
+
+    break_flag = 0
+    targets = row[1][1:-1].to_list()
+
+    for item in targets:
+        find = df_full.loc[df_full['_url'] == item]
+        if len(find) == 0:
+            unrelated += 1
+            break_flag += 1
+            break
+    if break_flag:
+        continue
 
     full_row = df_full.loc[df_full['_url'] == row[1]['query_article_link']]
-    abstract = full_row['_abstract'].str.replace('Abstract:', '').values[0]
-    embedding = model.embedding(abstract)
+    text = full_row['_abstract'].str.replace('Abstract:', '').values[0]
+    # text = full_row['_title'].values[0]
+    embedding = model.embedding(text)
     results = db.query_embedding(embedding)
 
-    targets = row[1].tolist()
-    targets = targets[2:]
     predicts = [item['url'] for item in results['metadatas'][0]]
-    accuracy.append(accuracy_score(targets, predicts))
-print(statistics.mean(accuracy))
+    df.loc[len(df)] = [full_row['_url'].values[0]]+[item['url']
+                                                    for item in results['metadatas'][0]]
+    accuracy.append((targets[0], predicts[0]))
+    for item in targets:
+        if item in predicts:
+            if top_k_flag:
+                all_tp += 1
+                top_k_flag = False
+            tp += 1
+        else:
+            fp += 1
+    precision = tp / (tp + fp)
+    precisions.append(precision)
+samples = len(df_google) - unrelated
+df.to_csv('result_all-distilroberta-v1_cosine_.csv')
+
+print('Accuracy: ', accuracy_score(
+    [item[0] for item in accuracy],
+    [item[1] for item in accuracy])
+)
+print('Unrelated samples: ', unrelated)
+print('Target samples: ', samples)
+print('Precisions: ', statistics.mean(precisions))
+print('Top-K: ', all_tp / samples)
