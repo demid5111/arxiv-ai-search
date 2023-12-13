@@ -4,7 +4,7 @@ from typing import Union
 
 import matplotlib.pyplot as plt
 import pandas as pd
-from matplotlib.backends.backend_pdf import PdfPages
+import numpy as np
 
 
 class Charts():
@@ -14,24 +14,30 @@ class Charts():
         self.df = pd.read_csv(path)
 
     def all_years(self, save_path: Path = Path('./dist'), start_year: int = 1993, union_year: int = 2011, end_year: int = 2023):
-        palitra_pie = ['#445577', '#606d8a', '#7c859e', '#989fb2', '#b5bac7', '#d3d5db',
-                       '#f1f1f1', '#f1d4d4', '#f0b8b8', '#ec9c9d', '#e67f83', '#de6069', '#de425b']
-        labels_pie = []
-        values_pie = []
+        labels = []
+        values = []
         sum_union_year = self.df[self.df._year <= union_year]._year.count()
-        labels_pie.append(f'{start_year}-{union_year}')
-        values_pie.append(sum_union_year)
+        labels.append(f'{start_year}-{union_year}')
+        values.append(sum_union_year)
         for i in range(union_year + 1, end_year + 1):
             sum_year = self.df[self.df._year == i]._year.count()
-            labels_pie.append(str(i))
-            values_pie.append(sum_year)
-        plt.clf()
-        fig, ax = plt.subplots()
-        ax.pie(values_pie, labels=labels_pie, wedgeprops={
-               'linewidth': 1, "edgecolor": 'white'}, colors=palitra_pie)
-        plt.savefig(save_path / 'all_years.png')
+            labels.append(str(i))
+            values.append(sum_year)
+        index = 'Year'
+        y_offset = np.zeros(1)
+        _, ax = plt.subplots()
+        cmap = plt.colormaps['tab20']
+        outer_colors = cmap(np.arange(13))
+        for row in range(len(values)):
+            ax.bar(index, values[row], label=labels[row], width=0.7,
+                   bottom=y_offset, color=outer_colors[row])
+            y_offset = y_offset + values[row]
+        ax.legend(loc="upper right")
+        ax.spines[['top', 'right']].set_visible(False)
+        ax.set_xlim(-2, 2)
+        plt.savefig(save_path / 'articles_in_every_year.png')
 
-    def current_years(self, save_path: Path = Path('./dist')):
+    def articles_by_months(self, save_path: Path = Path('./dist')):
         current_month = []
 
         for i in self.month_list:
@@ -39,13 +45,16 @@ class Charts():
             result = work_month._year.count()
             current_month.append(result)
         plt.clf()
-        fig, ax = plt.subplots()
+        _, ax = plt.subplots()
         ax.bar(self.month_list, current_month)
         ax.set_xlabel('Months')
         ax.set_ylabel('Count')
-        plt.savefig(save_path / f'figure_bar.png')
+        ax.spines[['top', 'right']].set_visible(False)
+        ax.grid(axis='both', linestyle='--', linewidth=0.5, color='0.7')
+        ax.set_axisbelow(True)
+        plt.savefig(save_path / 'number_of_articles_by_month.png')
 
-    def progression_graph(self, start_year: int = 1993, end_year: int = 2023, save_path: Path = Path('./dist')):
+    def articles_in_years(self, start_year: int = 1993, end_year: int = 2023, save_path: Path = Path('./dist')):
         labels_plot = []
         values_plot = []
         for i in range(start_year, end_year + 1):
@@ -53,11 +62,16 @@ class Charts():
             labels_plot.append(int(i))
             values_plot.append(sum_year)
         plt.clf()
-        fig, ax = plt.subplots()
+        _, ax = plt.subplots(figsize=(8, 6))
         ax.plot(labels_plot, values_plot)
         ax.set_xlabel('Years')
         ax.set_ylabel('Count')
-        plt.savefig(save_path / f'progression_bar.png')
+        start, end = min(labels_plot), max(labels_plot)
+        ax.xaxis.set_ticks(np.arange(start, end + 1, 2))
+        ax.xaxis.set_tick_params(rotation=45, labelsize=8)
+        ax.spines[['top', 'right']].set_visible(False)
+        ax.grid(axis='both', linestyle='--', linewidth=0.5, color='0.7')
+        plt.savefig(save_path / 'number_of_articles_in_years.png')
 
 
 def get_args():
@@ -71,8 +85,8 @@ def main():
     charts = Charts(Path(args.path))
 
     charts.all_years()
-    charts.current_years()
-    charts.progression_graph()
+    charts.articles_by_months()
+    charts.articles_in_years()
 
 
 if __name__ == '__main__':
