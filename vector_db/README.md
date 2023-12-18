@@ -24,13 +24,14 @@ uvicorn app.main:app --reload
 - Target samples: 235
 
 ### L2 abstract
-| Model                      | Precisions         | Top-K              | Accuracy           |
+| Model                      | Precisions         | Top-K              | Top-1              |
 | -------------------------- | ------------------ | ------------------ | ------------------ |
 | all-MiniLM-L6-v2           | 0.211489           | 0.991489           | 0.991489           |
 | all-mpnet-base-v2          | 0.215319           | 0.995744           | 0.995744           |
 | all-distilroberta-v1       | 0.21787            | 0.991489           | 0.991489           |
 | multi-qa-distilbert-cos-v1 | 0.1914893          | 0.978723           | 0.970212           |
 | e5-large                   | 0.2246808510638298 | 0.9829787234042553 | 0.9829787234042553 |
+| Random                     | 0.0212             | 0.0025             | 0.0                |
 
 ### L2 title
 | Model                      | Precisions        | Top-K              | Accuracy           |
@@ -40,6 +41,7 @@ uvicorn app.main:app --reload
 | all-distilroberta-v1       | 0.17489           | 0.778723           | 0.387234           |
 | multi-qa-distilbert-cos-v1 | 0.1446808         | 0.651063           | 0.357446           |
 | e5-large                   | 0.214468085106383 | 0.8595744680851064 | 0.5872340425531914 |
+| Random                     | 0.0212            | 0.0025             | 0.0                |
 
 
 ### Cosine abstract
@@ -50,6 +52,7 @@ uvicorn app.main:app --reload
 | all-distilroberta-v1       | 0.21787            | 0.991489           | 0.991489           |
 | multi-qa-distilbert-cos-v1 | 0.191489           | 0.978723           | 0.970212           |
 | e5-large                   | 0.2246808510638298 | 0.9829787234042553 | 0.9829787234042553 |
+| Random                     | 0.0212             | 0.0025             | 0.0                |
 
 ### Cosine title
 | Model                      | Precisions   | Top-K          | Accuracy       |
@@ -59,3 +62,5 @@ uvicorn app.main:app --reload
 | all-distilroberta-v1       | 0.174893     | 0.778723       | 0.387234       |
 | multi-qa-distilbert-cos-v1 | 0.144680     | 0.651063       | 0.357446       |
 | e5-large                   | 0.2144680851 | 0.859574468085 | 0.587234042553 |
+| Random                     | 0.0212       | 0.0025         | 0.0            |
+|                            |              |                |                |
