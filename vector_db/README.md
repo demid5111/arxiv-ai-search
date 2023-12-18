@@ -34,7 +34,7 @@ uvicorn app.main:app --reload
 | Random                     | 0.0212             | 0.0025             | 0.0                |
 
 ### L2 title
-| Model                      | Precisions        | Top-K              | Accuracy           |
+| Model                      | Precisions        | Top-K              | Top-1              |
 | -------------------------- | ----------------- | ------------------ | ------------------ |
 | all-MiniLM-L6-v2           | 0.172340          | 0.778723           | 0.365957           |
 | all-mpnet-base-v2          | 0.189361          | 0.812765           | 0.497872           |
@@ -45,7 +45,7 @@ uvicorn app.main:app --reload
 
 
 ### Cosine abstract
-| Model                      | Precisions         | Top-K              | Accuracy           |
+| Model                      | Precisions         | Top-K              | Top-1              |
 | -------------------------- | ------------------ | ------------------ | ------------------ |
 | all-MiniLM-L6-v2           | 0.21148            | 0.991489           | 0.991489           |
 | all-mpnet-base-v2          | 0.21531            | 0.995744           | 0.995744           |
@@ -55,7 +55,7 @@ uvicorn app.main:app --reload
 | Random                     | 0.0212             | 0.0025             | 0.0                |
 
 ### Cosine title
-| Model                      | Precisions   | Top-K          | Accuracy       |
+| Model                      | Precisions   | Top-K          | Top-1          |
 | -------------------------- | ------------ | -------------- | -------------- |
 | all-MiniLM-L6-v2           | 0.17191      | 0.778723       | 0.365957       |
 | all-mpnet-base-v2          | 0.189361     | 0.812765       | 0.497872       |
@@ -63,4 +63,3 @@ uvicorn app.main:app --reload
 | multi-qa-distilbert-cos-v1 | 0.144680     | 0.651063       | 0.357446       |
 | e5-large                   | 0.2144680851 | 0.859574468085 | 0.587234042553 |
 | Random                     | 0.0212       | 0.0025         | 0.0            |
-|                            |              |                |                |
