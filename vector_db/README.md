@@ -18,44 +18,69 @@ uvicorn app.main:app --reload
 | e5-large                   | 512                  | 1024        |                       | 1340       |
 
 ## Results
+- All in csv 566847
+- Without broken 566844
 - All targets samples: 590
 - Broken samples: 153
 - Unrelated samples: 202
 - Target samples: 235
 
 ### L2 abstract
-| Model                      | Precisions         | Top-K              | Accuracy           |
-| -------------------------- | ------------------ | ------------------ | ------------------ |
-| all-MiniLM-L6-v2           | 0.211489           | 0.991489           | 0.991489           |
-| all-mpnet-base-v2          | 0.215319           | 0.995744           | 0.995744           |
-| all-distilroberta-v1       | 0.21787            | 0.991489           | 0.991489           |
-| multi-qa-distilbert-cos-v1 | 0.1914893          | 0.978723           | 0.970212           |
-| e5-large                   | 0.2246808510638298 | 0.9829787234042553 | 0.9829787234042553 |
+| Model                      | Precisions | Top-K  | Top-1  |
+| -------------------------- | ---------- | ------ | ------ |
+| all-MiniLM-L6-v2           | 0.2115     | 0.9916 | 0.9915 |
+| all-mpnet-base-v2          | 0.2153     | 0.9957 | 0.9957 |
+| all-distilroberta-v1       | 0.2179     | 0.9915 | 0.9915 |
+| multi-qa-distilbert-cos-v1 | 0.1915     | 0.9787 | 0.9702 |
+| e5-large                   | 0.2247     | 0.9830 | 0.9830 |
+| Random                     | 0.0212     | 0.0025 | 0.0    |
 
 ### L2 title
-| Model                      | Precisions        | Top-K              | Accuracy           |
-| -------------------------- | ----------------- | ------------------ | ------------------ |
-| all-MiniLM-L6-v2           | 0.172340          | 0.778723           | 0.365957           |
-| all-mpnet-base-v2          | 0.189361          | 0.812765           | 0.497872           |
-| all-distilroberta-v1       | 0.17489           | 0.778723           | 0.387234           |
-| multi-qa-distilbert-cos-v1 | 0.1446808         | 0.651063           | 0.357446           |
-| e5-large                   | 0.214468085106383 | 0.8595744680851064 | 0.5872340425531914 |
+| Model                      | Precisions | Top-K  | Top-1  |
+| -------------------------- | ---------- | ------ | ------ |
+| all-MiniLM-L6-v2           | 0.1723     | 0.7787 | 0.3660 |
+| all-mpnet-base-v2          | 0.1893     | 0.8128 | 0.4979 |
+| all-distilroberta-v1       | 0.1749     | 0.7787 | 0.3872 |
+| multi-qa-distilbert-cos-v1 | 0.1447     | 0.6511 | 0.3574 |
+| e5-large                   | 0.2145     | 0.8596 | 0.5872 |
+| Random                     | 0.0212     | 0.0025 | 0.0    |
 
 
 ### Cosine abstract
-| Model                      | Precisions         | Top-K              | Accuracy           |
-| -------------------------- | ------------------ | ------------------ | ------------------ |
-| all-MiniLM-L6-v2           | 0.21148            | 0.991489           | 0.991489           |
-| all-mpnet-base-v2          | 0.21531            | 0.995744           | 0.995744           |
-| all-distilroberta-v1       | 0.21787            | 0.991489           | 0.991489           |
-| multi-qa-distilbert-cos-v1 | 0.191489           | 0.978723           | 0.970212           |
-| e5-large                   | 0.2246808510638298 | 0.9829787234042553 | 0.9829787234042553 |
+| Model                      | Precisions | Top-K  | Top-1  |
+| -------------------------- | ---------- | ------ | ------ |
+| all-MiniLM-L6-v2           | 0.2114     | 0.9915 | 0.9915 |
+| all-mpnet-base-v2          | 0.2153     | 0.9957 | 0.9957 |
+| all-distilroberta-v1       | 0.2179     | 0.9915 | 0.9915 |
+| multi-qa-distilbert-cos-v1 | 0.1915     | 0.9787 | 0.9702 |
+| e5-large                   | 0.2247     | 0.9830 | 0.9830 |
+| Random                     | 0.0212     | 0.0025 | 0.0    |
 
 ### Cosine title
-| Model                      | Precisions   | Top-K          | Accuracy       |
-| -------------------------- | ------------ | -------------- | -------------- |
-| all-MiniLM-L6-v2           | 0.17191      | 0.778723       | 0.365957       |
-| all-mpnet-base-v2          | 0.189361     | 0.812765       | 0.497872       |
-| all-distilroberta-v1       | 0.174893     | 0.778723       | 0.387234       |
-| multi-qa-distilbert-cos-v1 | 0.144680     | 0.651063       | 0.357446       |
-| e5-large                   | 0.2144680851 | 0.859574468085 | 0.587234042553 |
+| Model                      | Precisions | Top-K  | Top-1  |
+| -------------------------- | ---------- | ------ | ------ |
+| all-MiniLM-L6-v2           | 0.1719     | 0.7787 | 0.3660 |
+| all-mpnet-base-v2          | 0.1894     | 0.8128 | 0.4979 |
+| all-distilroberta-v1       | 0.1749     | 0.7787 | 0.3872 |
+| multi-qa-distilbert-cos-v1 | 0.1447     | 0.6511 | 0.3574 |
+| e5-large                   | 0.2145     | 0.8596 | 0.5872 |
+| Random                     | 0.0212     | 0.0025 | 0.0    |
+
+
+## Query results
+Query: LoRA: Low-Rank Adaptation of Large Language Models
+| Result | Article                                                                                          |
+| ------ | ------------------------------------------------------------------------------------------------ |
+|        | Low-rank Adaptation of Large Language Model Rescoring for Parameter-Efficient Speech Recognition |
+|        | QA-LoRA: Quantization-Aware Low-Rank Adaptation of Large Language Models                         |
+|        | The Expressive Power of Low-Rank Adaptation                                                      |
+|        | Orthogonal Subspace Learning for Language Model Continual Learning                               |
+|        | VeRA: Vector-based Random Matrix Adaptation                                                      |
+|        | LoraHub: Efficient Cross-Task Generalization via Dynamic LoRA Composition                        |
+|        | Parameter-Efficient Multilingual Summarisation: An Empirical Study                               |
+|        | Delta-LoRA: Fine-Tuning High-Rank Parameters with the Delta of Low-Rank Matrices                 |
+|        | Low-rank Adaptation Method for Wav2vec2-based Fake Audio Detection                               |
+|        | LoRA: Low-Rank Adaptation of Large Language Models                                               |
+
+## Hardware and Software
+Hardware used for experiments: CPU: AMD Ryzen 3 PRO 3200G X4 3.6Gh, GPU: NVIDIA GeForce RTX 3060 12Gb. Software used for experiments: Driver Version: 525.147.05,  CUDA Version: 12.0 
