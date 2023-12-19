@@ -243,5 +243,5 @@ dist/
 *.blg
 *.fls
 *.out
-*.fdb_latexml
+*.fdb_latexmk
 *.synctex.gz
