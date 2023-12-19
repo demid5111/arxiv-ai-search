@@ -1,0 +1,299 @@
+\documentclass{article}
+
+\input{definitions.tex}
+
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{mathtext}
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{hyperref}
+
+
+\title{Semantic search of similar academic papers}
+\author{Alexander Demidovskij \and Igor Salnikov}
+\date{December 2023}
+
+
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+    Information retrieval is one of integral parts of modern natural language processing tasks. arXiv is one of the key resources nowadays for sharing latest and greatest results in various academic fields, such as Computer Science. However, built-in search on the website does not allow to get most relevant results, finding arXiv preprints via Google requires advanced search skills, other solutions require paid subscription. In this work we propose a mechanism that allows to easier find relevant papers and suggest integrating it either to built-in search of the website or as a standalone service for free usage. Project is open-source with the following link: \url{https://github.com/demid5111/arxiv-ai-search}.
+\end{abstract}
+
+\section{Introduction}
+    Information retrieval is one of integral parts of modern natural language processing tasks. arXiv is one of the key resources nowadays for sharing latest and greatest results in various academic fields. It is owned by Cornell University and has 8 key categories:
+    
+    \begin{enumerate}
+        \item Computer Science (40 sub-categories)
+        \item Economics (3 sub-categories)
+        \item Electrical Engineering and System Science (4 sub-categories)
+        \item Mathematics (32 sub-categories)
+        \item Physics (51 sub-categories)
+        \item Quantitative Biology (10 sub-categories)
+        \item Quantitative Finance (9 sub-categories)
+        \item Statistics (6 sub-categories)
+    \end{enumerate}
+    
+    This repository of open access preprints plays a vital role in modern academia, helps to quickly identify recent progress in the field of interest and considerably boosts information exchange. Comparing to traditional academic pipeline that assumes that a scientist gets results, prepares anonymous reports, sends it to a conference or a journal with review period of 2-3 months and 3-6 months correspondingly, then publication within 2-3 months. Thus, between results that are obtained and when they are exposed a half of the year or a year might last. Comparing to that, a researcher might immediately publish his results in a form of preprint and get exposed to the world-wide community. These benefits have made arXiv an integral part of modern scientific life with more than 16K pre-prints being published online every month. Dynamics of papers in a single category "Computer Science" is depicted in Figure \ref{fig:cumulative}
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.99\linewidth]{img/number_of_articles_in_years.pdf}
+        \caption{Dynamics of papers in a single category "Computer Science".}
+        \label{fig:cumulative}
+    \end{figure}
+    
+    However, such a velocity of publications also requires robust and quick means of search. Currently there are several ways of finding papers and pre-prints related to your field. We will demonstrate the existing search issues by an example: search of papers related to the quite famous paper \cite{hu2021lora} that introduces LoRA algorithm for Parameter-Efficient Fine-Tuning (PEFT) of Large Language Models (LLM). As we want to find papers that are close to this paper, we perform search by its title: \textit{Lora: Low-rank adaptation of large language models}. For assessment we evaluate top-10 answers ignoring the order. Search is performed on 12/18/2023.
+    
+    First, is the built-in search on the arXiv platform (Figure \ref{fig:arxiv-search}). Based on the results obtained with a sorting based on decreasing relevance, we can see that only 2 academic papers somehow relate to the paper's content. Other papers are found mostly by match to the words "large language model". Interestingly, we do not see the original paper in the list. So, efficiency is 2/10.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.89\linewidth]{img/search_arxiv.png}
+        \caption{Search by title in arXiv platform.}
+        \label{fig:arxiv-search}
+    \end{figure}
+
+    Second option is basic search through Google (Figure \ref{fig:google-search}). Based on the results obtained, we can see that only 1 academic paper found at all, however it is relevant to what we are looking for. Also, we do not count that there are several preprints of the original paper, as we want to find papers that are relevant to that one but not the original paper itself. So, efficiency is 1/10. 
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.65\linewidth]{img/search_google.png}
+        \caption{Search by title in Google.}
+        \label{fig:google-search}
+    \end{figure}
+
+    Third option is advanced search through Google (Figure \ref{fig:advanced-google-search}). As we want to find preprints on a particular website we can use special flag in search query to specify it as the only source for searching, so the query is: \textit{Low-rank adaptation of large language models site:arxiv.org}. Based on the results obtained, we can see that now feed contains only preprints. After analyzing their relevance to the topic, 6 papers are relevant, 3 are original paper and its duplicates, 1 is duplicate of the relevant paper. So, efficiency is 6/10.
+
+    As we can see, current search engine in arXiv does not help much in finding relevant articles, Google search allows to find relevant papers much better, but that requires advanced search flags that are not so widespread among researchers and still relevance search quality could be further improved. It is hard to predict how exactly Google searches the scientific papers, arXiv seems to search based on keywords.
+    
+    In this work we propose a mechanism that allows to easier and more qualitatively find relevant papers on arXiv, we deliver a prototype of a service for search and plan to suggest integrating it to built-in search of the arXiv website. We propose to build index of arXiv papers, use projections of their titles and abstracts to the latent space and search for relevant papers based on the distance between the distributed representation of a query and indexed papers.
+    
+    % 1. why the problem you were working on is important. 
+    % 2. what is unique in your approach to this problem,
+    % 3. what are the differences to other approaches.
+
+    \subsection{Team}
+        Please list your team members and describe their responsibilities. Example:
+
+        \textbf{Alexander Demidovskij} defined research task and methodology, collected arXiv index for Computer Science section from 1993 to 2023, collected validation dataset based on Google queries,proposed metrics used for models assessment, prepared this document.
+
+        \textbf{Igor Salnikov} defined list of deep learning models for comparison, implemented application, deployed it as an on-line service, performed computational experiments with proper visualizations that became an integral part of this document.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.65\linewidth]{img/search_google_advanced.png}
+        \caption{Search by title in Google with advanced flags.}
+        \label{fig:advanced-google-search}
+    \end{figure}
+
+\section{Related Work}\label{sec:related}
+
+    Information retrieval (IR) is "the name of the field encompassing the retrieval of all information retrieval IR manner of media based on user information needs" \cite{jurafsky}. The task of IR is usually defined by a user's query that is given to the IR system and the response is the ranked list of documents. 
+
+    Information retrieval has undergone a considerable evolution starting with term-based methods and to integrating Artificial Neural Networks (ANNs). One of the most basic approaches is keyword retrieval \cite{salton1988term}. Also, within a field of search system the important role is played by two ranking approaches: TF-IDF and BM25 algorithms that define ranking rules for documents based on query terms \cite{robertson1995okapi}. A serious paradigm shift in information retrieval happened due to introduction of vector space model \cite{salton1975vector}. The most simple scenario is mapping documents to vectors based on unigrams frequencies and search is then performed on base of cosine distance between pairs of vectors. The key problem with this approach is vocabulary mismatch problem: query contains words that are not known to the system, therefore their statistics become unusable in this case. 
+    
+    Modern systems are mostly based on Artificial Neural Networks \\ \cite{lin2022pretrained}~,~however, general principle of using embeddings (or vectorized representations of the text) is the prevailing idea in modern IR systems as well. However, nowadays dense vector representations are obtained with encoder neural networks, such as BERT. However, using pre-trained models, like BERT, might not produce embeddings that capture semantics of particular use case. 
+    
+    One of the key directions is fine-tuning encoders for a downstream task or field. Another important topic is IR is fast indexing and search of close documents among millions of entries. For example, new libraries appear such as Facebook's FAISS \cite{faiss} or Nvidia's RAFT \cite{raft}. Designing a production-ready solution in a form of a service or an application is also a challenging task which introduces novel questions to the list of standard design decisions to be made, such as selection of algorithm and libraries for efficient search of documents, selection of pre-trained encoder, definition of distance metric between document embeddings, etc. 
+
+\section{Model Description}\label{sec:methodology}
+    We suggest to design arXiv search engine based on dense embeddings produced by ANN. The proposed system is described according to key elements of IR system: Rewriter, Retriever, Reranker, Reader.
+    
+    \subsection{Rewriter}
+    
+        We propose to keep user query as-is, given the assumption that a user is a researcher who needs to find papers exactly about the topic they requested. We recommend to introduce upper bound for a word limit in the query in the same manner as Google does (not more than 32 words). However, no refining of the initial query is needed.
+
+    \subsection{Retriever}
+    
+        Search for relevant papers should be performed on top of dense representations of papers. The way they are collected and stored is covered in Section \ref{sec:dataset}. Given that all papers are collected, they should be translated to the latent space with the means of ANN. We propose to use two strategies. The first one is encoding only title - it is short and concise summary of the paper. The second one is encoding an abstract - it contains valuable details about main paper ideas and results, therefore search through abstracts might help researchers find related papers based on the query. Number of dimensions of the distributed vector is defined by the encoder architecture.
+
+    \subsection{Reranker}
+
+        We propose to use two different metrics for estimating similarity between query and document: cosine similarity and euclidean distance (the smaller the distance the more similar are the documents).
+        
+    \subsection{Reader}
+
+        For the case of academic papers search we do not suggest any improvements or rephrasing for the answers exposed to the user. The results of IR is list of relevant papers that might be interesting for a user.
+
+    
+    \subsection{Encoder models}
+        
+        As for models, we propose to use selected models from HuggingFace. Summary of used models is demonstrated in Table \ref{tab:hf-models}.
+
+        \begin{table*}
+            \small
+            \centering
+            \caption{Models selected for retriever component of arXiv IR.}
+            \label{tab:hf-models}
+        
+            \begin{tabularx}{0.99\textwidth}{XIIII}
+        
+                \toprule
+        
+                \bfseries Models & \bfseries Max sequence length, tokens & \bfseries Dimensions & \bfseries Speed, sentence/sec & \bfseries Size (MB) \\
+        
+                \midrule
+                
+                all-MiniLM-L6-v2 &	256 &	384 &	14200 &	80 \\
+                all-mpnet-base-v2 &	384 &	768 &	2800 &	420 \\
+                all-distilroberta-v1 &	512 &	768 &	4000 &	290 \\
+                multi-qa-distilbert-cos-v1 &	512 &	768 &	4000 &	250 \\
+                e5-large &	512 &	1024 & &	1340  \\
+                \bottomrule
+        
+            \end{tabularx}
+        \end{table*}
+    
+    \subsection{Quality assessment}
+        
+        The task of creating search engine for a particular platform is not a novel task, however, several specific characteristics of the given task for arXiv platform are still present. First, we do not care at this moment of search engine development about the ranks of responses. What is necessary from our point of view is to demonstrate the use top-N relevant papers to the given query. Similar approach is used in some paid services, such as Connected Papers\footnote{\url{https://www.connectedpapers.com/}} where relevant papers are represented as nodes with an edge between current paper and the original one. Therefore, ranking metrics are not that much applicable for evaluating quality of the final solution.
+
+        Evaluation is not possible without a dataset. For the given task, the new dataset needs to be collected. Technical details on collection of validation dataset are given in Section \ref{sec:dataset}. Here, we focus on what should constitute the validation dataset.
+
+        As a query we consider a title of the article. Complexity comes with the reference answer. We do not want to perform manual annotation as it does not scale and is error-prone. At the same time, to the best of our knowledge, there is no ready collection of correct recommendations for a given article. We decided to use Google responses as correct answers. So, for a given article, we get its title, query Google with the special flag as demonstrated in Introduction, get top-10 \textit{arXiv} papers from the response. Thus, we obtain a validation dataset entry: a sample (title of the article) and reference value (10 arXiv papers). 
+
+\section{Dataset}\label{sec:dataset}
+    
+    Designing the IR for arXiv papers, we consider vast amount of papers that should be indexed on a regular basis. So, there is no appropriate source of dataset, other than just content of arXiv platform available for open access. Therefore, we have designed the scrapper that collects articles from arXiv and collected all articles from January 1993 to November 2023 in the category of "Computer Science".
+
+    The aforementioned scrapper is built on top of simple scheme of making HTTP GET requests to the pages of the arXiv platform, parsing these pages and extracting valuable information, such as authors, title, summary, etc. Now we explain this process step by step.
+
+    \subsection{Index collection}
+
+        To be able to scrape web data we need to define the page which contains necessary information. We are at first interested in obtaining list of papers that were made in a particular month of the particular year. For that, we have identified a proper mechanism of arXiv platform. When you open the browser with a link \url{https://arxiv.org/list/cs/2301?skip=2000&show=4000}, you will get list of papers that were published in January (\textbf{01}) 20\textbf{23}, we select to see papers from \textbf{2000}\textsuperscript{th} to \textbf{4000}\textsuperscript{th}. Maximum number of pages if limited by platform and is equal to 2000. Therefore, if we see from the page that in this period there were more than 2000 papers, we make several GET requests to obtain the full list. From the resulting HTML pages we extract links to the papers and their meta-information. 
+        
+        Index collection is organized with the help of \textit{requests} and \textit{beautifulsoup4} libraries. All months are processed concurrently with \textit{multiprocessing} module, overall collection time depends on available cores of the machine. Resulting index is stored in \textit{.csv} format, separate file for each month and year. At the final stage, these files are joined together with the help of \textit{pandas} library.
+
+        Index collection is performed in a fully automatic manner for a particular category. As a result of collection, information about 566847 papers was obtained, 3 of them are filtered out during pre-processing as they are no longer available on the arXiv platform. It is available online: \url{https://github.com/demid5111/arxiv-ai-search/blob/main/arxiv_scrapper/assets/arxiv_index_Nov_2023.csv} under GPL-3.0 license. Overall distribution of articles per year in a single category "Computer Science" is demonstrated in Figure \ref{fig:articles-pie}.
+
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=0.99\linewidth]{img/articles_in_every_year.pdf}
+            \caption{Overall distribution of articles per year in a single category "Computer Science".}
+            \label{fig:articles-pie}
+        \end{figure}
+
+    \subsection{Abstracts collection}
+
+        Original HTML pages with list of papers published at the particular month do not contain abstract. Therefore, we need to collect abstracts for each paper separately. Overall approach is the same: GET request to obtain HTML page with abstract, parsing HTML and extracting vital information. To give an example of page that contains an abstract we refer to \url{https://arxiv.org/abs/2106.09685}.
+
+        Abstracts collection is organized with the help of \textit{requests} and \textit{beautifulsoup4} libraries. All months are processed concurrently with \textit{multiprocessing} module, overall collection time depends on available cores of the machine. However, it is considerably long: takes 3-4 machine days on a moderate hardware (8-16 CPU cores). Resulting file is stored in \textit{.csv} format, separate file for each month and year. At the final stage, these files are joined together with the help of \textit{pandas} library.
+
+        Abstracts collection is performed in a fully automatic manner for a particular category. As a result of collection, abstracts of 566847 papers were obtained, 3 of them are filtered out during pre-processing as they are no longer available on the arXiv platform. It is available online: \url{https://cloud.mail.ru/public/MrJu/TW2mYSV55/arxiv_abs_Nov_2023.csv} under GPL-3.0 license. Overall distribution of articles per month through whole period of arXiv existence in a single category "Computer Science" is demonstrated in Figure \ref{fig:articles-bars}.
+
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=0.99\linewidth]{img/number_of_articles_by_month.pdf}
+            \caption{Overall distribution of articles per month in a single category "Computer Science".}
+            \label{fig:articles-bars}
+        \end{figure}
+
+    
+    \subsection{Validation dataset collection}
+
+        As described in Section \ref{sec:methodology}, we are measuring performance of our system with a help of special procedure of alignment with Google search results. During designing the validation dataset, we have faced several issues:
+        
+        \begin{enumerate}
+            \item Google is very strict with GET requests made from code. After 3-10 successful requests, Google bans the IP for approximately 8-12 hours.
+            \item Google's HTML names (styles, classes) are auto-generated and change almost in every response. 
+        \end{enumerate}
+
+        To tackle these problems, we have chosen a different scraping strategy. Instead of GET request from Python code, we open a browser in headless mode via \textit{selenium} library, open a page in the browser, get HTML from browser and only then parse it. Working from browser allows to make much more requests (up to 30) per IP. Also, we open a browser with a special URL that already contains search string, so we skip additional step of searching that saves additional 20-30 requests - that allows to make up to 60 requests per single IP. So, to collect validation dataset for 12 months with 10 entries per month, we need two IP addresses. Obviously it does not perfectly scale and requires running this scrapper on several machines, but at the same time is still much faster and safer than collecting same amount of validation data with a help of human annotators, such as students.
+
+        Validation dataset contains entries from 2019-2023, takes nearly 12 hours and needs 10 IP addresses. As a result of collection, validation dataset contains 590 entries, after pre-processing 235 are left. It is available online: \url{https://github.com/demid5111/arxiv-ai-search/blob/main/arxiv_scrapper/assets/arxiv_google_Nov_2023.csv} under GPL-3.0 license.
+
+\section{Experiments}
+
+    \subsection{Metrics}
+    
+        We have defined following metrics for evaluating quality of our solution.
+
+        \paragraph{Precision}
+       
+            For true positives (\(TP\)) we consider papers that are both in reference list and in predictions, (\(FP\)) we consider papers that are not in reference list but are present in predictions. We evaluate precision according to \ref{eq:precision}.
+
+
+            \begin{equation}
+                Precision = \frac{|TP|}{|TP| + |FP|}
+                \label{eq:precision}
+            \end{equation}
+
+        \paragraph{Top-K}
+       
+            For true positives (\(TP\)) we consider papers that are both in reference list and in predictions, (\(FP\)) we consider papers that are not in reference list but are present in predictions. We evaluate precision according to \ref{eq:top-k}, where \(D\) denotes dataset, \(x, Y\) - a query and reference results from a single entry of validation dataset, \(\phi\) - search function.
+
+
+            \begin{equation}
+                \begin{split}
+                    hit(Y, \hat{Y}, k) &= \left\{\begin{matrix}
+                        1, & | Y \cap \{\hat{y_{i}} \in \hat{Y} | i=1,2,...,k\} | > 0 \\
+                        0, & otherwise \\
+                       \end{matrix}\right. \\ 
+                    Hit(D, k) &= \frac{\sum_{x, Y \in D} hit(Y, \phi(x), k)}{|D|}
+                \end{split}
+                \label{eq:top-k}
+            \end{equation}
+
+    \subsection{Experiment Setup}
+        
+        Hardware used for experiments: CPU: AMD Ryzen 3 PRO 3200G X4 3.6GHz, GPU: NVIDIA GeForce RTX 3060 12GB. Software used for experiments: Driver Version: 525.147.05, CUDA Version: 12.0.  Models were taken from HuggingFace (Table \ref{tab:hf-models}). Dataset details are present in Section \ref{sec:dataset}. Encoding of papers was performed on GPU. Number of \(k\) in metrics is defined as 10.
+
+    \subsection{Baselines}
+        
+        As a baseline we consider random selection of related papers. Number of related papers is defined as 10. 
+
+\section{Results}
+    We have performed extensive experiments with the own scrapped validation dataset and also we have built a prototype of a service that is available online for free of charge use. 
+    
+    To begin with, computational experiments against our own dataset. We have performed 4 experiments with each encoder model, resulting in 20 experiments. They are grouped by configuration:
+    
+    \begin{enumerate}
+        \item Embeddings search by abstract, \(L_{2}\) as a distance metric (Table \ref{tab:experiments:abs-l2}),
+        \item Embeddings search by abstract, \(cosine\) as a distance metric (Table \ref{tab:experiments:abs-cos}),
+        \item Embeddings search by title, \(L_{2}\) as a distance metric (Table \ref{tab:experiments:title-l2}),
+        \item Embeddings search by title, \(cosine\) as a distance metric  (Table \ref{tab:experiments:title-cos}).
+    \end{enumerate}
+
+    \include{tables/all_tables}
+
+    \hl{ANALYSIS OF RESULTS - WHICH MODEL IS THE BEST/WHICH IS THE FASTEST}
+
+    It is also important to compare performance of the resulting solution on the same example as we used in Introduction to demonstrate beneficial behavior of the new system Figure \ref{fig:aziri-search}. Based on the results obtained 8 papers are relevant, 2 are less relevant but still interesting for an expert in PEFT field. So, efficiency is 8/10.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.7\linewidth]{img/search_aziri.png}
+        \caption{Search by title in proposed service.}
+        \label{fig:aziri-search}
+    \end{figure}
+
+    \hl{DESCRIPTION OF SERVICE}
+    
+
+\section{Conclusion}
+    
+
+    In this work we have proposed a novel approach to finding relevant preprints on arXiv platform. In particular, we have following contributions:
+    
+    \begin{enumerate}
+        \item identified a problem in search of relevant papers by manually comparing its quality on arXiv and Google,
+        \item proposed a solution based on dense vector representations obtained by modern encoder-based neural networks,
+        \item designed automatic scrapper of arXiv papers that scales to the whole platform and to the available hardware,
+        \item collected full index of arXiv papers for a period of its existence (1993-nowadays) in a section "Computer Science" (566844 papers),
+        \item identified original approach of evaluating quality of search via Google search feed,
+        \item collected validation dataset based on the specially designed approach of hybrid (both static and dynamic scrapping),
+        \item performed computational experiments with the validation dataset and 5 deep learning pre-trained models and identified best performing model, which is \textit{e5-large},
+        \item designed a system for efficient storage and search of documents based on their distributed representation,
+        \item designed and deployed a prototype of the web service that demonstrates capabilities of the search and is free of use. 
+    \end{enumerate}
+    
+    We want to believe that our work might be integrated to the arXiv or continue existing as a standalone service. We are sure that contribution to the arXiv as a leading preprint platform will help researchers to find relevant papers easier that will allow better and faster information exchange and bring more innovation. 
+
+\bibliographystyle{apalike}
+\bibliography{lit}
+\end{document}
