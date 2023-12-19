@@ -1,0 +1,103 @@
+\begin{table*}[!htbp]
+    \small
+    \centering
+    \caption{Experiment results for search by indexed abstracts with \(L_{2}\) as a distance.}
+
+    \begin{tabularx}{0.99\textwidth}{XIII}
+
+        \toprule
+
+        \bfseries Model & \bfseries Precision, \% & \bfseries Hits@10, \% & \bfseries Hits@1, \% \\
+
+        \midrule
+        
+        all-MiniLM-L6-v2	& 21.15 &	99.15 &	99.15 \\
+        all-mpnet-base-v2	& 21.53 &	99.57 &	99.57 \\
+        all-distilroberta-v1	& 21.79 &	99.15 &	99.15 \\
+        multi-qa-distilbert-cos-v1	& 19.15 &	97.87 &	97.02 \\
+        e5-large	& 22.47 &	98.3  &	98.3 \\
+
+        \bottomrule
+
+    \end{tabularx}
+
+    \label{tab:experiments:abs-l2}
+\end{table*}
+
+\begin{table*}[!htbp]
+    \small
+    \centering
+    \caption{Experiment results for search by indexed abstracts with \(cosine\) as a distance.}
+
+    \begin{tabularx}{0.99\textwidth}{XIII}
+
+        \toprule
+
+        \bfseries Model & \bfseries Precision, \% & \bfseries Hits@10, \% & \bfseries Hits@1, \% \\
+
+        \midrule
+        
+        all-MiniLM-L6-v2	& 21.15 &	99.15 &	99.15 \\
+        all-mpnet-base-v2	& 21.53 &	99.57 &	99.57 \\
+        all-distilroberta-v1	& 21.79 &	99.15 &	99.15 \\
+        multi-qa-distilbert-cos-v1	& 19.15 &	97.87 &	97.02 \\
+        e5-large	& 22.47 &	98.3  &	98.3 \\
+
+        \bottomrule
+
+    \end{tabularx}
+
+    \label{tab:experiments:abs-cos}
+\end{table*}
+
+\begin{table*}[!htbp]
+    \small
+    \centering
+    \caption{Experiment results for search by indexed titles with \(L_{2}\) as a distance.}
+
+    \begin{tabularx}{0.99\textwidth}{XIII}
+
+        \toprule
+
+        \bfseries Model & \bfseries Precision, \% & \bfseries Hits@10, \% & \bfseries Hits@1, \% \\
+
+        \midrule
+        
+        all-MiniLM-L6-v2	& 21.15 &	99.15 &	99.15 \\
+        all-mpnet-base-v2	& 21.53 &	99.57 &	99.57 \\
+        all-distilroberta-v1	& 21.79 &	99.15 &	99.15 \\
+        multi-qa-distilbert-cos-v1	& 19.15 &	97.87 &	97.02 \\
+        e5-large	& 22.47 &	98.3  &	98.3 \\
+
+        \bottomrule
+
+    \end{tabularx}
+
+    \label{tab:experiments:title-l2}
+\end{table*}
+
+\begin{table*}[!htbp]
+    \small
+    \centering
+    \caption{Experiment results for search by indexed titles with \(cosine\) as a distance.}
+
+    \begin{tabularx}{0.99\textwidth}{XIII}
+
+        \toprule
+
+        \bfseries Model & \bfseries Precision, \% & \bfseries Hits@10, \% & \bfseries Hits@1, \% \\
+
+        \midrule
+        
+        all-MiniLM-L6-v2	& 21.15 &	99.15 &	99.15 \\
+        all-mpnet-base-v2	& 21.53 &	99.57 &	99.57 \\
+        all-distilroberta-v1	& 21.79 &	99.15 &	99.15 \\
+        multi-qa-distilbert-cos-v1	& 19.15 &	97.87 &	97.02 \\
+        e5-large	& 22.47 &	98.3  &	98.3 \\
+
+        \bottomrule
+
+    \end{tabularx}
+
+    \label{tab:experiments:title-cos}
+\end{table*}

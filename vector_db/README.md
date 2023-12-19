@@ -1,4 +1,4 @@
-# vector-db-servie
+# vector-db-service
 
 ## Running locally
 
