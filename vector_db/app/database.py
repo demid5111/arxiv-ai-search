@@ -1,15 +1,19 @@
 import hashlib
+import os
 import random
 import secrets
-from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any
 
 import chromadb
 
 
 class DataBase:
     def __init__(self, settings: dict[str, Any]) -> None:
-        chroma_client = chromadb.PersistentClient()
+        if os.environ['DB_PATH']:
+            chroma_client = chromadb.PersistentClient(
+                path=os.environ['DB_PATH'])
+        else:
+            chroma_client = chromadb.PersistentClient()
         self.collection = chroma_client.get_or_create_collection(**settings)
 
     def _generate_random_hash(self) -> None:

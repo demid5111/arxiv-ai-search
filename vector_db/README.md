@@ -8,6 +8,18 @@
 uvicorn app.main:app --reload
 ```
 
+## Deploy
+
+1. Build docker image
+```bash
+cd vector_db
+docker build -t vector_db .
+```
+2. Run image with DB
+```bash
+docker run -v {PATH_TO_DB}:/chroma -p 8000:8000 vector_db
+```
+
 ## Models
 | Model                      | Max Sequence Length: | Dimensions: | Speed (sentence/sec): | Size (MB): |
 | -------------------------- | -------------------- | ----------- | --------------------- | ---------- |

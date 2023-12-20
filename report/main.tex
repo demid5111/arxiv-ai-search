@@ -143,7 +143,7 @@
                 all-mpnet-base-v2 & 384 &   768 &   2800 &  420 \\
                 all-distilroberta-v1 &  512 &   768 &   4000 &  290 \\
                 multi-qa-distilbert-cos-v1 &    512 &   768 &   4000 &  250 \\
-                e5-large &  512 &   1024 & \hl{NO VALUE} &  1340  \\
+                e5-large &  512 &   1024 & N/A &  1340  \\
                 \bottomrule
             \end{tabularx}
         \end{table}
@@ -270,7 +270,7 @@
             \label{fig:aziri-search}
         \end{figure}
     
-        The service is a client-server application. The client part is written using JavaScript and the Bootstrap5 library as a CSS-framework. In the server part, the FastAPI framework is used as a backend, and ChromaDB is used as a vector database. Prototype of the service is deployed and available online: \url{http://62.84.112.56:8000/}.
+        The service is a client-server application. The client part is a search form and fields for displaying results. Written using JavaScript and the Bootstrap5 library as a CSS framework. The server part uses the FastAPI framework as a backend, and ChromaDB as a vector database. A model: e5-large was used to generate embeddings and fill the database with data. Prototype of the service is deployed and available online: \url{http://62.84.112.56:8000/}.
         
     
     \section{Conclusion}
