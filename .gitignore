@@ -235,3 +235,13 @@ arxiv_scrapper/assets/arxiv_abs_Nov_2023.csv
 
 chroma/
 dist/
+
+## Core latex/pdflatex auxiliary files:
+*.aux
+*.bbl
+*.log
+*.blg
+*.fls
+*.out
+*.fdb_latexmk
+*.synctex.gz
