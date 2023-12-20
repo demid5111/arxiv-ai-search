@@ -1,8 +1,8 @@
-\begin{table*}[!htbp]
+\begin{table*}
     \small
     \centering
-    \caption{Experiment results for search by indexed abstracts with \(L_{2}\) as a distance.}
-
+    \caption{Experiment results for finding similar papers by original paper abstract with \(L_{2}\) as a distance.}
+    \bigskip
     \begin{tabularx}{0.99\textwidth}{XIII}
 
         \toprule
@@ -11,12 +11,15 @@
 
         \midrule
         
+        Random		                & 2.12  &  0.0 	&    0.25 \\
+        
+        \midrule
+        
         all-MiniLM-L6-v2	        & 21.15 & 99.15	   &	99.15 \\
-        all-mpnet-base-v2	        & 21.53 & \textbf{99.57}	   &	\textbf{99.57} \\
+        all-mpnet-base-v2	        & 21.53 & \bfseries 99.57 &	\bfseries 99.57 \\
         all-distilroberta-v1	    & 21.79 & 99.15	   &	99.15 \\
         multi-qa-distilbert-cos-v1	& 19.15 & 97.02	   &	97.87 \\
-        e5-large	                & \textbf{22.47} & 98.3 	   &	98.3 \\
-        Random		                & 2.12  &  0.0 	&    0.25 \\
+        e5-large	                & \bfseries 22.47 & 98.3 	   &	98.3 \\
 
         \bottomrule
 
@@ -25,11 +28,11 @@
     \label{tab:experiments:abs-l2}
 \end{table*}
 
-\begin{table*}[!htbp]
+\begin{table*}
     \small
     \centering
-    \caption{Experiment results for search by indexed abstracts with \(cosine\) as a distance.}
-
+    \caption{Experiment results for finding similar papers by original paper abstract with \(cosine\) as a distance.}
+    \bigskip
     \begin{tabularx}{0.99\textwidth}{XIII}
 
         \toprule
@@ -38,12 +41,15 @@
 
         \midrule
         
+        Random (baseline)	                & 2.12  &  0.0     &    0.25 \\
+        
+        \midrule
+
         all-MiniLM-L6-v2	        & 21.14 & 99.15	   &	99.15 \\
-        all-mpnet-base-v2	        & 21.53 & \textbf{99.57}	   &	\textbf{99.57} \\
+        all-mpnet-base-v2	        & 21.53 & \bfseries 99.57 &	\bfseries 99.57 \\
         all-distilroberta-v1	    & 21.79 & 99.15	   &	99.15 \\
         multi-qa-distilbert-cos-v1	& 19.15 & 97.02	   &	97.87 \\
-        e5-large	                & \textbf{22.47} & 98.30	   &	98.30 \\
-        Random		                & 2.12  &  0.0     &    0.25 \\
+        e5-large	                & \bfseries 22.47 & 98.30	   &	98.30 \\
 
         \bottomrule
 
@@ -52,11 +58,11 @@
     \label{tab:experiments:abs-cos}
 \end{table*}
 
-\begin{table*}[!htbp]
+\begin{table*}
     \small
     \centering
-    \caption{Experiment results for search by indexed titles with \(L_{2}\) as a distance.}
-
+    \caption{Experiment results for finding similar papers by original paper title with \(L_{2}\) as a distance.}
+    \bigskip
     \begin{tabularx}{0.99\textwidth}{XIII}
 
         \toprule
@@ -65,12 +71,15 @@
 
         \midrule
         
+        Random		                & 2.12  &  0.0  	   &    00.25 \\
+        
+        \midrule
+
         all-MiniLM-L6-v2	        & 17.23 & 36.605	   &	77.87 \\
         all-mpnet-base-v2	        & 18.93 & 49.797	   &	81.28 \\
         all-distilroberta-v1	    & 17.49 & 38.725	   &	77.87 \\
         multi-qa-distilbert-cos-v1	& 14.47 & 35.742	   &	65.11 \\
-        e5-large	                & \textbf{21.45} & \textbf{58.72} 	   &	\textbf{85.96} \\
-        Random		                & 2.12  &  0.0  	   &    00.25 \\
+        e5-large	                & \bfseries 21.45 & \bfseries 58.72 &	\bfseries 85.96 \\
 
         \bottomrule
 
@@ -79,11 +88,12 @@
     \label{tab:experiments:title-l2}
 \end{table*}
 
-\begin{table*}[!htbp]
+\begin{table}
     \small
     \centering
-    \caption{Experiment results for search by indexed titles with \(cosine\) as a distance.}
-
+    \caption{Experiment results for finding similar papers by original paper title with \(cosine\) as a distance.}
+    \label{tab:experiments:title-cos}
+    \bigskip
     \begin{tabularx}{0.99\textwidth}{XIII}
 
         \toprule
@@ -92,16 +102,17 @@
 
         \midrule
         
+        Random		                & 2.12  &  0.0  &    00.25 \\
+        
+        \midrule
+        
         all-MiniLM-L6-v2	        & 17.19 & 36.60	   &	77.87 \\
         all-mpnet-base-v2	        & 18.94 & 49.79	   &	81.28 \\
         all-distilroberta-v1	    & 17.49 & 38.72	   &	77.87 \\
         multi-qa-distilbert-cos-v1	& 14.47 & 35.74	   &	65.11 \\
-        e5-large	                & \textbf{21.45} & \textbf{58.72}	   &	\textbf{85.96} \\
-        Random		                & 2.12  &  0.0  &    00.25 \\
+        e5-large	                & \bfseries 21.45 & \bfseries 58.72 &	\bfseries 85.96 \\
 
         \bottomrule
 
     \end{tabularx}
-
-    \label{tab:experiments:title-cos}
-\end{table*}
+\end{table}
