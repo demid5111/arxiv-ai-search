@@ -21,7 +21,7 @@
 \maketitle
 
 \begin{abstract}
-    Information retrieval is one of the integral parts of modern natural language processing tasks. arXiv is one of the key resources nowadays for sharing the latest and greatest results in various academic fields, such as computer science. However, the built-in search on the website does not allow for the most relevant results; finding arXiv preprints via Google requires advanced search skills; other solutions require a paid subscription. In this work, we propose a mechanism that makes it easier to find relevant papers and suggest integrating it either into the built-in search of the website or as a standalone service for free usage. The project is open-source with the following link: \url{https://github.com/demid5111/arxiv-ai-search}. A prototype of the service is deployed and available online: \hl{PUT URL HERE}.
+    Information retrieval is one of the integral parts of modern natural language processing tasks. arXiv is one of the key resources nowadays for sharing the latest and greatest results in various academic fields, such as computer science. However, the built-in search on the website does not allow for the most relevant results; finding arXiv preprints via Google requires advanced search skills; other solutions require a paid subscription. In this work, we propose a mechanism that makes it easier to find relevant papers and suggest integrating it either into the built-in search of the website or as a standalone service for free usage. The project is open-source with the following link: \url{https://github.com/demid5111/arxiv-ai-search}. A prototype of the service is deployed and available online: \url{http://62.84.112.56:8000/}.
 \end{abstract}
 
 \section{Introduction}
@@ -128,7 +128,7 @@
         \begin{table}
             \small
             \centering
-            \caption{Models selected for the retriever component of arXiv IR. \hl{WHERE ARE NUMBERS FROM?}}
+            \caption{Models selected for the retriever component of arXiv IR. \url{https://www.sbert.net/docs/pretrained_models.html}}
             \label{tab:hf-models}
             \bigskip
         
@@ -143,7 +143,7 @@
                 all-mpnet-base-v2 & 384 &   768 &   2800 &  420 \\
                 all-distilroberta-v1 &  512 &   768 &   4000 &  290 \\
                 multi-qa-distilbert-cos-v1 &    512 &   768 &   4000 &  250 \\
-                e5-large &  512 &   1024 & \hl{NO VALUE} &  1340  \\
+                e5-large &  512 &   1024 & N/A &  1340  \\
                 \bottomrule
             \end{tabularx}
         \end{table}
@@ -259,9 +259,7 @@
     
         Based on the results of the experiments, for the task of searching similar papers by title, the best performing model is \textit{e5-large} as it allows achieving 85.96\% Hits@10 for search by title, 58.72\% Hits@1 and 21.45\% precision. For the task of searching similar papers by abstract, the best performing model is \textit{all-mpnet-base-v2} as it allows achieving 99.57\% Hits@10 for search by title, 99.57\% Hits@1.
     
-        \hl{SAME results for Hits@1 and Hits@10 in Table 2 and 3??}
-    
-        \hl{IDENTICAL Table 4 and Table 5???}
+        Moreover, as can be seen from tables, there is practically no difference in the \(L_{2}\) and \(cosine\) metrics and is observed only for some models in ten-thousandth orders.
     
         It is also important to compare the performance of the resulting solution on the same example as we used in the Introduction to demonstrate the beneficial behavior of the new system (Figure \ref{fig:aziri-search}). Based on the results obtained, eight papers are relevant, and two are less relevant but still interesting for an expert in the PEFT field. So, efficiency is 8/10.
     
@@ -272,7 +270,7 @@
             \label{fig:aziri-search}
         \end{figure}
     
-        \hl{DESCRIPTION OF SERVICE} Prototype of the service is deployed and available online: \hl{PUT URL HERE}.
+        The service is a client-server application. The client part is a search form and fields for displaying results. Written using JavaScript and the Bootstrap5 library as a CSS framework. The server part uses the FastAPI framework as a backend, and ChromaDB as a vector database. A model: e5-large was used to generate embeddings and fill the database with data. Prototype of the service is deployed and available online: \url{http://62.84.112.56:8000/}.
         
     
     \section{Conclusion}
@@ -288,7 +286,7 @@
             \item collected a validation dataset based on the specially designed approach of hybrid (both static and dynamic scrapping),
             \item performed computational experiments with the validation dataset and 5 deep learning pre-trained models and identified the best-performing model, which is \textit{e5-large},
             \item designed a system for efficient storage and search of documents based on their distributed representation,
-            \item designed and deployed a prototype of the web service that demonstrates the capabilities of the search and is free to use. A prototype of the service is deployed and available online: \hl{PUT URL HERE}.
+            \item designed and deployed a prototype of the web service that demonstrates the capabilities of the search and is free to use. A prototype of the service is deployed and available online: \url{http://62.84.112.56:8000/}.
         \end{enumerate}
         
         We want to believe that our work might be integrated into the arXiv or continue to exist as a standalone service. There are multiple directions for further research: indexing whole paper content instead of just abstracts; improving metrics and introducing rank-based metrics for quality assessment; regular scans of the arXiv platform, service robustness and stability; etc. We are sure that our contribution to the arXiv as a leading preprint platform will help researchers find relevant papers easier, which will allow better and faster information exchange and bring more innovation. 
