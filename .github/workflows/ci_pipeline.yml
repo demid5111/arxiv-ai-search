@@ -80,7 +80,6 @@ jobs:
       - name: Setup FIPL environment
         uses: fipl-hse/setup-env-action@v0.9
       - name: Dependencies check
-        if: ${{ env.REPOSITORY_TYPE == 'admin' }}
         run: |
           bash config/stage_1_style_tests/_stage_requirements_check.sh
 
@@ -95,6 +94,5 @@ jobs:
       - name: Setup FIPL environment
         uses: fipl-hse/setup-env-action@v0.9
       - name: Newline check
-        if: ${{ env.REPOSITORY_TYPE == 'admin' }}
         run: |
           bash config/stage_1_style_tests/_stage_newline_check.sh
