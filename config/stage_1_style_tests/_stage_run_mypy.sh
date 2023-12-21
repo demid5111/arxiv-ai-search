@@ -19,7 +19,7 @@ for LAB_NAME in ${DIRS_TO_CHECK[*]}; do
     continue
   fi
 
-  mypy $LAB_NAME
+  mypy --explicit-package-bases $LAB_NAME
 done
 
 echo "Mypy check passed."
