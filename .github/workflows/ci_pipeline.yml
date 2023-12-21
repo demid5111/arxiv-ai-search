@@ -27,7 +27,7 @@ jobs:
   code-style:
     name: Code Style
     runs-on: ubuntu-latest
-    timeout-minutes: 2
+    timeout-minutes: 3
     needs: [ install-dependencies ]
     env:
       PR_NAME: ${{ github.event.pull_request.title }}
@@ -44,7 +44,7 @@ jobs:
   mypy-checks:
     name: Mypy checks
     runs-on: ubuntu-latest
-    timeout-minutes: 2
+    timeout-minutes: 3
     needs: [ install-dependencies ]
 
     steps:
@@ -58,7 +58,7 @@ jobs:
   flake8-checks:
     name: Import style checks
     runs-on: ubuntu-latest
-    timeout-minutes: 2
+    timeout-minutes: 3
     needs: [ install-dependencies ]
 
     steps:
@@ -72,7 +72,7 @@ jobs:
   requirements-check:
     name: Requirements check
     runs-on: ubuntu-latest
-    timeout-minutes: 2
+    timeout-minutes: 3
     needs: [ install-dependencies ]
 
     steps:
@@ -86,7 +86,7 @@ jobs:
   newline-check:
     name: Newline check
     runs-on: ubuntu-latest
-    timeout-minutes: 2
+    timeout-minutes: 3
     needs: [ install-dependencies ]
 
     steps:
