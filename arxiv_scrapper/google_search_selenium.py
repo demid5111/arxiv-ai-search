@@ -1,5 +1,5 @@
 import time
-from urllib.parse import urlparse, urlencode
+from urllib.parse import urlencode, urlparse
 
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By

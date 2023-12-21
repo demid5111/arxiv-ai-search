@@ -3,8 +3,8 @@ from pathlib import Path
 from typing import Union
 
 import matplotlib.pyplot as plt
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 
 class Charts():

@@ -1,0 +1,9 @@
+[tool.flake8]
+max-line-length = 100
+exclude = [
+    'venv*',
+    'build/'
+]
+application_import_names = ['config']
+select = ['I']
+count = true

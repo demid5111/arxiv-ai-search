@@ -95,4 +95,4 @@ Query: LoRA: Low-Rank Adaptation of Large Language Models
 |        | LoRA: Low-Rank Adaptation of Large Language Models                                               |
 
 ## Hardware and Software
-Hardware used for experiments: CPU: AMD Ryzen 3 PRO 3200G X4 3.6Gh, GPU: NVIDIA GeForce RTX 3060 12Gb. Software used for experiments: Driver Version: 525.147.05,  CUDA Version: 12.0 
+Hardware used for experiments: CPU: AMD Ryzen 3 PRO 3200G X4 3.6Gh, GPU: NVIDIA GeForce RTX 3060 12Gb. Software used for experiments: Driver Version: 525.147.05,  CUDA Version: 12.0.
