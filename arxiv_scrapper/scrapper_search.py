@@ -7,18 +7,17 @@ import pyarrow as pa
 import requests
 from pyarrow import csv
 from selenium import webdriver
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service as ChromiumService
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.firefox.service import Service as FirefoxService
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 from tqdm import tqdm
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
-
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException
 
 from arxiv_scrapper.constants import DIST_PATH
 from arxiv_scrapper.dto.submission_dto import NUM_TO_MONTH

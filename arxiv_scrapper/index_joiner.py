@@ -5,7 +5,7 @@ import pandas as pd
 from arxiv_scrapper.constants import DIST_PATH
 
 
-def _process(path_to_compress: Path, has_year: bool = True):
+def _process(path_to_compress: Path, has_year: bool = True) -> None:
     joint_df = pd.concat(
         map(
             pd.read_csv,
@@ -29,7 +29,7 @@ def _process(path_to_compress: Path, has_year: bool = True):
     joint_df.to_csv(path_to_compress / 'arxiv_final.csv')
 
 
-def main():
+def main() -> None:
     path_to_compress = DIST_PATH / 'tmp_index'
     path_to_compress = DIST_PATH / 'tmp_abstract'
     path_to_compress = DIST_PATH / 'tmp_val'

@@ -1,5 +1,4 @@
-from arxiv_scrapper.dto.submission_dto import (SubmissionDTO,
-                                               SubmissionQueryResultDTO)
+from arxiv_scrapper.dto.submission_dto import SubmissionDTO, SubmissionQueryResultDTO
 from arxiv_scrapper.google_search_selenium import search
 
 

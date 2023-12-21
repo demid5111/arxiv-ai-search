@@ -1,6 +1,6 @@
 import argparse
-import statistics
 import random
+import statistics
 from pathlib import Path
 
 import pandas as pd

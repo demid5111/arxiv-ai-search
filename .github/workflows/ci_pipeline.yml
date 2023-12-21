@@ -1,0 +1,98 @@
+name: "Check PR"
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+concurrency:
+  group: ${{ github.repository }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  install-dependencies:
+    name: Installing dependencies
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup FIPL environment
+        uses: fipl-hse/setup-env-action@v0.9
+      - name: Confirming everything is OK
+        run: |
+          ls -la venv
+
+  code-style:
+    name: Code Style
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    needs: [ install-dependencies ]
+    env:
+      PR_NAME: ${{ github.event.pull_request.title }}
+      PR_AUTHOR: ${{ github.actor }}
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup FIPL environment
+        uses: fipl-hse/setup-env-action@v0.9
+      - name: Code Style
+        run: |
+          bash config/stage_1_style_tests/_stage_run_lint.sh "$PR_NAME" "$PR_AUTHOR"
+
+  mypy-checks:
+    name: Mypy checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    needs: [ install-dependencies ]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup FIPL environment
+        uses: fipl-hse/setup-env-action@v0.9
+      - name: MyPy check
+        run: |
+          bash config/stage_1_style_tests/_stage_run_mypy.sh
+
+  flake8-checks:
+    name: Import style checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    needs: [ install-dependencies ]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup FIPL environment
+        uses: fipl-hse/setup-env-action@v0.9
+      - name: Flake8 check
+        run: |
+          bash config/stage_1_style_tests/_stage_run_flake8.sh
+
+  requirements-check:
+    name: Requirements check
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    needs: [ install-dependencies ]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup FIPL environment
+        uses: fipl-hse/setup-env-action@v0.9
+      - name: Dependencies check
+        run: |
+          bash config/stage_1_style_tests/_stage_requirements_check.sh
+
+  newline-check:
+    name: Newline check
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    needs: [ install-dependencies ]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup FIPL environment
+        uses: fipl-hse/setup-env-action@v0.9
+      - name: Newline check
+        run: |
+          bash config/stage_1_style_tests/_stage_newline_check.sh
