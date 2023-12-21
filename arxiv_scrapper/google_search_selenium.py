@@ -6,7 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
 
-def scroll_to_bottom(browser, times):
+def scroll_to_bottom(browser, times) -> None:
     scroll_pause_time = 5
 
     for _ in range(times):

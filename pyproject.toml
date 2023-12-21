@@ -7,3 +7,45 @@ exclude = [
 application_import_names = ['config']
 select = ['I']
 count = true
+
+[tool.isort]
+py_version = '310'
+skip_gitignore = true
+line_length = 100
+order_by_type = true
+remove_redundant_aliases = true
+group_by_package = true
+force_alphabetical_sort_within_sections = true
+
+[tool.mypy]
+python_version = '3.10'
+exclude = [
+    'venv*'
+]
+
+disallow_untyped_defs = true
+disallow_any_unimported = true
+no_implicit_optional = true
+check_untyped_defs = true
+warn_return_any = true
+show_error_codes = true
+warn_unused_ignores = false
+
+# simplifications
+disable_error_code = [
+    'var-annotated',
+    'union-attr'
+]
+
+[[tool.mypy.overrides]]
+module = [
+    'chromadb',
+    'fastapi.*',
+    'matplotlib.*',
+    'pandas',
+    'torch',
+    'selenium.*',
+    'sentence_transformers',
+    'sklearn.*',
+]
+ignore_missing_imports = true

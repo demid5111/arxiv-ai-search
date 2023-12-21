@@ -10,6 +10,7 @@ from pydantic import BaseModel
 class Item(BaseModel):
     text: str
 
+
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
@@ -17,7 +18,7 @@ templates = Jinja2Templates(directory="templates")
 model = Model()
 
 settings = {
-    "name":"arxiv"
+    "name": "arxiv"
 }
 db = DataBase(settings)
 
@@ -26,16 +27,19 @@ db = DataBase(settings)
 async def root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
+
 @app.post("/embedding/")
 async def get_embedding(item: Item):
     embedding = model.embedding(item.text)
     return {'embedding': embedding.tolist()}
 
+
 @app.post("/add/")
-async def get_embedding(item: Item):
+async def add_embedding(item: Item):
     embedding = model.embedding(item.text)
     db.add([item.text], embedding)
     return {'embedding': embedding.tolist()}
+
 
 @app.post("/query/")
 async def get_embedding(item: Item):
